@@ -15,7 +15,12 @@ async def create(datas: Type, session: Session) -> Type:
     return datas
 
 async def reads(skip: int, limit: int, session: Session) -> List[Type]:
-    return session.query(db.Type).offset(skip).limit(limit).all()
+    types: List[Type] = []
+    result = session.query(db.Type).offset(skip).limit(limit).all()
+    for r in result:
+        type = Type.model_validate(r)
+        types.append(type)
+    return types
 
 async def read(pid: int, session: Session) -> Type:
     return session.query(db.Type).filter(db.Type.id == pid).first()

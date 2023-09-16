@@ -2,7 +2,7 @@ import csv
 # import pathlib
 # import os
 
-from datetime import datetime
+from datetime import datetime, date
 from typing import List, Optional
 from pydantic import BaseModel, Field, field_validator, ConfigDict
 
@@ -11,14 +11,14 @@ from pydantic import BaseModel, Field, field_validator, ConfigDict
 class Type(BaseModel):
     model_config = ConfigDict(from_attributes=True)
     id:     int
-    name:   str = Field(max_length=64)
+    name:   str = Field(max_length=64, default="")
 
 
 
 class Value(BaseModel):
     model_config = ConfigDict(from_attributes=True)
     id:     int
-    value:  str = Field(max_length=128)
+    value:  str = Field(max_length=128, default="")
 
 
 
@@ -27,6 +27,13 @@ class Contact(Value):
     type_id:    int
 
 
+# TODO:
+class Telegram(Value):
+    @field_validator("value")
+    def validator(cls, value: str):
+        if not value.startswith('@'):
+            raise ValueError("Invalid telegram account.")
+        return value
 
 class Email(Value):
     @field_validator("value")
@@ -70,10 +77,13 @@ class Phone(Value, PhoneValidator):
 class Person(BaseModel):
     model_config = ConfigDict(from_attributes=True)
     id:         int
-    first_name: str = Field(max_length=128)
-    last_name:  str = Field(max_length=128)
-
+    first_name: str = Field(max_length=128, default="")
+    last_name:  str = Field(max_length=128, default="")
+    born_date:  date= Field()
 
 
 class PersonContacts(Person):
     contacts: List[Contact]
+
+# class Persons(BaseModel):
+#     persons: List[Person]

@@ -15,7 +15,7 @@ class Person(Base):
     id          = Column("id"           , Integer       , primary_key = True)
     first_name  = Column("first_name"   , String(128)   , nullable=False)
     last_name   = Column("last_name"    , String(128)   , nullable=False)
-
+    born_date   = Column("born_date"    , DateTime      , nullable=True)
     __table_args__ = (UniqueConstraint("first_name", "last_name", name = "uc_groups"), )
 
     contacts = relationship("Contact"   , back_populates="person")

@@ -2,6 +2,7 @@ import importlib
 import os
 import sys
 
+from datetime import date, datetime, timedelta
 from typing import List
 from fastapi import APIRouter, HTTPException, Depends, status
 from sqlalchemy.orm import Session
@@ -25,8 +26,17 @@ async def reads_persons(first_name: str = "", last_name: str = "", session: Sess
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=error_not_found)
     return _datas
 
-contacts = APIRouter(prefix=f"/contacts", tags=["contacts"])
-@contacts.get("/persons/contacts", response_model=List[models.PersonContacts])
+@persons.get("/birthday", response_model=List[models.PersonContacts])
+async def reads_by_bithday(born_date = datetime.now(), session: Session = Depends(db)):
+    date = datetime.now() + timedelta(7)
+    date = date.date()
+    _datas = await repository.reads_persons_by_birthday(date, session)
+    if _datas is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=error_not_found)
+    return _datas
+
+# contacts = APIRouter(prefix=f"/contacts", tags=["contacts"])
+@persons.get("/contacts", response_model=List[models.PersonContacts])
 async def reads_contacts(value: str = "", session: Session = Depends(db)):
     _datas = await repository.reads_contacts(value, session)
     if _datas is None:

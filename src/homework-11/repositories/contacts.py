@@ -15,18 +15,23 @@ async def create(datas: Contact, session: Session) -> Contact:
     return datas
 
 async def reads(skip: int, limit: int, session: Session) -> List[Contact]:
-    return session.query(db.Contact).offset(skip).limit(limit).all()
+    contacts: List[Contact] = []
+    result = session.query(db.Contact).offset(skip).limit(limit).all()
+    for r in result:
+        person = Contact.model_validate(r)
+        contacts.append(person)
+    return contacts
 
 async def read(pid: int, session: Session) -> Contact:
     return session.query(db.Contact).filter(db.Contact.id == pid).first()
 
 async def update(pid: int, datas: Contact, session: Session) -> Contact | None:
-    datas = session.query(db.Contact).filter(db.Contact.id == pid).first()
-    if datas:
-        datas.value = datas.value
+    _datas = session.query(db.Contact).filter(db.Contact.id == pid).first()
+    if _datas:
+        _datas.value = datas.value
         session.commit()
-        session.refresh(datas)
-    return datas
+        session.refresh(_datas)
+    return _datas
 
 async def delete(pid: int, session: Session)  -> Contact | None:
     datas = session.query(db.Contact).filter(db.Contact.id == pid).first()
