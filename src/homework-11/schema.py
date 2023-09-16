@@ -1,0 +1,79 @@
+import csv
+# import pathlib
+# import os
+
+from datetime import datetime
+from typing import List, Optional
+from pydantic import BaseModel, Field, field_validator, ConfigDict
+
+
+
+class Type(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+    id:     int
+    name:   str = Field(max_length=64)
+
+
+
+class Value(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+    id:     int
+    value:  str = Field(max_length=128)
+
+
+
+class Contact(Value):
+    contact_id: int
+    type_id:    int
+
+
+
+class Email(Value):
+    @field_validator("value")
+    def validator(cls, value):
+        if not "@" in value:
+            raise ValueError("Invalid email.")
+        return value
+
+class PhoneValidator():
+    mobile_codes = ["50", "63", "66", "67", "68", "73", "90", "91", "92", "93", "94", "95", "96", "97", "98", "99"]
+    region_codes = []
+    with open("data/region_codes_ua.csv", 'r') as fd:
+        reader = csv.reader(fd, delimiter=',')
+        for row in reader:
+            codes = row[2].split('"')
+            code = codes[0]
+            try:
+                int(code)
+            except ValueError:
+                continue
+            region_codes.append(code)
+    
+
+class Phone(Value, PhoneValidator):
+    @field_validator("value")
+    def validator(cls, value):
+        if len(value) != 10:
+            raise ValueError("Invalid phone number.")
+        if      value[2:8] not in cls.region_codes  \
+            and value[2:7] not in cls.region_codes  \
+            and value[2:6] not in cls.region_codes  \
+            and value[2:5] not in cls.region_codes  \
+            and value[2:4] not in cls.region_codes  \
+            and value[2:4] not in cls.mobile_codes  \
+        :
+            raise ValueError("Invalid phone number.")
+        return value
+
+
+
+class Person(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+    id:         int
+    first_name: str = Field(max_length=128)
+    last_name:  str = Field(max_length=128)
+
+
+
+class PersonContacts(Person):
+    contacts: List[Contact]
