@@ -26,10 +26,10 @@ async def reads(skip: int, limit: int, session: Session) -> List[Person]:
 async def read(pid: int, session: Session) -> Person:
     return session.query(db.Person).filter(db.Person.id == pid).first()
 
-async def reads_persons_by_birthday(birthday: date, session: Session) -> List[PersonContacts]:
+async def reads_persons_by_birthday(days: int, session: Session) -> List[PersonContacts]:
     result = session.query(db.Person)\
                 .join(db.Person.contacts)\
-                .filter(db.Person.born_date <= birthday).all()
+                .filter(func.days_to_birthday(db.Person.born_date, date.today()) <= days).all()
     persons:List[PersonContacts] = []
     for r in result:
         person = PersonContacts.model_validate(r)

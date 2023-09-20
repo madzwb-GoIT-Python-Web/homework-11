@@ -23,7 +23,7 @@ class Value(BaseModel):
 
 
 class Contact(Value):
-    contact_id: int
+    person_id:  int
     type_id:    int
 
 
@@ -87,3 +87,30 @@ class PersonContacts(Person):
 
 # class Persons(BaseModel):
 #     persons: List[Person]
+
+
+# class Login(BaseModel):
+#     login:      str = Field(min_length=5, max_length=16)
+#     password:   str = Field(min_length=6, max_length=10)
+#     email:      str
+
+
+# class User(BaseModel):
+#     model_config = ConfigDict(from_attributes=True)
+
+#     id:         int
+#     login:      str
+#     email:      str
+#     created:    datetime
+#     # avatar: str
+
+
+# class LoginResponse(BaseModel):
+#     user: User
+#     detail: str = "User successfully created"
+
+
+# class Token(BaseModel):
+#     access_token:   str
+#     refresh_token:  str
+#     token_type:     str = "bearer"

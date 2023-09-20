@@ -3,11 +3,21 @@ import uvicorn
 from fastapi import FastAPI, Path, Query, Depends, HTTPException
 from sqlalchemy.orm import Session
 from sqlalchemy import text
+# from sqlalchemy import event
 
-from database.connection import db
-from routes import persons, contacts, types
+# import database.functions as functions
+
+from database.connection import db, engine
+from routes import persons, contacts, types, auth
 
 app = FastAPI()
+
+# @event.listens_for(engine, 'connect')
+# def on_connect(dbapi_connection, connection_record):
+#     for name, function in functions.registry.items():
+#         dbapi_connection.create_function(name, 1, function)
+
+# app.include_router(auth.router      , prefix='/api')
 
 app.include_router(persons.persons  , prefix='/api')
 # app.include_router(persons.contacts , prefix='/api')

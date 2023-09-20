@@ -27,10 +27,10 @@ async def reads_persons(first_name: str = "", last_name: str = "", session: Sess
     return _datas
 
 @persons.get("/birthday", response_model=List[models.PersonContacts])
-async def reads_by_bithday(born_date = datetime.now(), session: Session = Depends(db)):
-    date = datetime.now() + timedelta(7)
-    date = date.date()
-    _datas = await repository.reads_persons_by_birthday(date, session)
+async def reads_by_bithday(days: int = 7, session: Session = Depends(db)):
+    # date = datetime.now() + timedelta(7)
+    # date = date.date()
+    _datas = await repository.reads_persons_by_birthday(days, session)
     if _datas is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=error_not_found)
     return _datas
