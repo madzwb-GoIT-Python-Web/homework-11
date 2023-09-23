@@ -1,4 +1,4 @@
-import database.schema as db
+from database.schema import Type as DBType
 
 from typing import List
 from sqlalchemy.orm import Session
@@ -8,33 +8,35 @@ from schema import Type
 
 
 async def create(datas: Type, session: Session) -> Type:
-    datas = db.Type(**dict(datas))
+    datas = DBType(**dict(datas))
     session.add(datas)
     session.commit()
     session.refresh(datas)
     return datas
 
 async def reads(skip: int, limit: int, session: Session) -> List[Type]:
-    types: List[Type] = []
-    result = session.query(db.Type).offset(skip).limit(limit).all()
+    results: List[Type] = []
+    result = session.query(DBType).offset(skip).limit(limit).all()
     for r in result:
-        type = Type.model_validate(r)
-        types.append(type)
-    return types
+        result = Type.model_validate(r)
+        results.append(result)
+    return results
 
 async def read(pid: int, session: Session) -> Type:
-    return session.query(db.Type).filter(db.Type.id == pid).first()
+    return session.query(DBType).filter(DBType.id == pid).first()
 
 async def update(pid: int, datas: Type, session: Session) -> Type | None:
-    _datas = session.query(db.Type).filter(db.Type.id == pid).first()
+    _datas = session.query(DBType).filter(DBType.id == pid).first()
     if _datas:
         _datas.name   = datas.name
         session.commit()
+        session.refresh(_datas)
     return _datas
 
 async def delete(pid: int, session: Session)  -> Type | None:
-    _datas = session.query(db.Type).filter(db.Type.id == pid).first()
+    _datas = session.query(DBType).filter(DBType.id == pid).first()
     if _datas:
         session.delete(_datas)
         session.commit()
+        session.refresh(_datas)
     return _datas
