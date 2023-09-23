@@ -32,13 +32,13 @@ Base = declarative_base()
 class Person(Base):
     __tablename__ = "persons"
     id          = Column("id"           , Integer       , primary_key = True)
-    # user_id     = Column("user_id"      , Integer       , ForeignKey("users.id" , onupdate="CASCADE", ondelete="CASCADE"), nullable=False)
+    user_id     = Column("user_id"      , Integer       , ForeignKey("users.id" , onupdate="CASCADE", ondelete="CASCADE"), nullable=False)
     first_name  = Column("first_name"   , String(128)   , nullable=False)
     last_name   = Column("last_name"    , String(128)   , nullable=False)
     born_date   = Column("born_date"    , Date          , nullable=True)
-    __table_args__ = (UniqueConstraint("first_name", "last_name", name = "uc_groups"), )
+    __table_args__ = (UniqueConstraint("user_id", "first_name", "last_name", name = "uc_persons"), )
 
-    # user        = relationship("User"      , back_populates="persons")
+    user        = relationship("User"      , back_populates="persons")
     contacts    = relationship("Contact"   , back_populates="person")
 
 
@@ -75,7 +75,7 @@ class User(Base):
     # avatar          = Column("id"           , String(255)   , nullable=True)
     refresh_token   = Column("refresh_token", String(255)   , nullable=True)
 
-    # persons = relationship("Person"   , back_populates="user")
+    persons = relationship("Person"   , back_populates="user")
 
 metadata = MetaData()
 # target_metadata = Base.metadata

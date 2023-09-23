@@ -77,6 +77,7 @@ class Phone(Value, PhoneValidator):
 class Person(BaseModel):
     model_config = ConfigDict(from_attributes=True)
     id:         int
+    user_id:    int
     first_name: str = Field(max_length=128, default="")
     last_name:  str = Field(max_length=128, default="")
     born_date:  date= Field()
