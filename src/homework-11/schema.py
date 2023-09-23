@@ -102,6 +102,7 @@ class User(BaseModel):
     login:      str
     email:      str
     created_at: datetime
+    disabled:   bool
     # avatar: str
 
 
