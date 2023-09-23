@@ -17,15 +17,27 @@ anyio==3.7.1
     #   fastapi
     #   starlette
     #   watchfiles
+bcrypt==4.0.1
+    # via passlib
+cffi==1.15.1
+    # via cryptography
 click==8.1.7
     # via uvicorn
 colorama==0.4.6
     # via
     #   click
     #   uvicorn
+cryptography==41.0.4
+    # via python-jose
+ecdsa==0.18.0
+    # via python-jose
 faker==19.4.0
     # via homework-11 (pyproject.toml)
 fastapi==0.103.1
+    # via
+    #   fastapi-jwt-auth
+    #   homework-11 (pyproject.toml)
+fastapi-jwt-auth==0.5.0
     # via homework-11 (pyproject.toml)
 flupy==1.2.0
     # via alembic-utils
@@ -43,22 +55,40 @@ markupsafe==2.1.3
     # via mako
 parse==1.19.1
     # via alembic-utils
+passlib[bcrypt]==1.7.4
+    # via homework-11 (pyproject.toml)
 psycopg2==2.9.7
     # via homework-11 (pyproject.toml)
+pyasn1==0.5.0
+    # via
+    #   python-jose
+    #   rsa
+pycparser==2.21
+    # via cffi
 pydantic==2.3.0
     # via
     #   fastapi
     #   homework-11 (pyproject.toml)
 pydantic-core==2.6.3
     # via pydantic
+pyjwt==1.7.1
+    # via fastapi-jwt-auth
 python-dateutil==2.8.2
     # via faker
 python-dotenv==1.0.0
     # via uvicorn
+python-jose[cryptography]==3.3.0
+    # via homework-11 (pyproject.toml)
+python-multipart==0.0.6
+    # via homework-11 (pyproject.toml)
 pyyaml==6.0.1
     # via uvicorn
+rsa==4.9
+    # via python-jose
 six==1.16.0
-    # via python-dateutil
+    # via
+    #   ecdsa
+    #   python-dateutil
 sniffio==1.3.0
     # via anyio
 sqlalchemy==2.0.0

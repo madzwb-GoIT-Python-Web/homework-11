@@ -17,7 +17,7 @@ app = FastAPI()
 #     for name, function in functions.registry.items():
 #         dbapi_connection.create_function(name, 1, function)
 
-# app.include_router(auth.router      , prefix='/api')
+app.include_router(auth.router      , prefix='/api')
 
 app.include_router(persons.persons  , prefix='/api')
 # app.include_router(persons.contacts , prefix='/api')

@@ -65,10 +65,10 @@ class Contact(Base):
 class User(Base):
     __tablename__ = "users"
     id              = Column("id"           , Integer       , primary_key=True)
-    login           = Column("username"     , String(50)    , nullable=False    , unique=True)
+    login           = Column("login"        , String(50)    , nullable=False    , unique=True)
     password        = Column("password"     , String(255)   , nullable=False)
     email           = Column("email"        , String(250)   , nullable=False    , unique=True)
-    created         = Column('created'      , DateTime      , nullable=False    , default=func.now())
+    created_at      = Column('created_at'   , DateTime      , nullable=False    , default=func.now())
     # avatar          = Column("id"           , String(255)   , nullable=True)
     refresh_token   = Column("refresh_token", String(255)   , nullable=True)
 

@@ -13,6 +13,9 @@ from database.connection import db
 from schema import Person as Type
 import repositories.persons as repository
 
+from schema import User
+from services.auth import auth
+
 names = os.path.splitext(os.path.basename(__file__))[0]
 name = names[0:-1].capitalize() if names[-1] == 's' else names.capitalize()
 error_not_found = f"{name} not found."
@@ -27,7 +30,7 @@ async def reads_persons(first_name: str = "", last_name: str = "", session: Sess
     return _datas
 
 @persons.get("/birthday", response_model=List[models.PersonContacts])
-async def reads_by_bithday(days: int = 7, session: Session = Depends(db)):
+async def reads_by_bithday(days: int = 7, session: Session = Depends(db), current_user: User = Depends(auth.get_current_user)):
     # date = datetime.now() + timedelta(7)
     # date = date.date()
     _datas = await repository.reads_persons_by_birthday(days, session)
