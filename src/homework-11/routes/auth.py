@@ -14,7 +14,7 @@ router = APIRouter(prefix='/auth', tags=["auth"])
 security = HTTPBearer()
 
 ACCESS_TOKEN_EXPIRE     = 3
-REFRESH_TOKEN_EXPIRE    = 5
+REFRESH_TOKEN_EXPIRE    = 60
 
 @router.post("/signup", response_model=LoginResponse, status_code=status.HTTP_201_CREATED)
 async def signup(login: Login, session: Session = Depends(db)):
@@ -52,7 +52,9 @@ async def refresh_token(credentials: HTTPAuthorizationCredentials = Security(sec
         await repository.update_token(user, None, session)
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid refresh token.")
 
-    access_token    = await auth.create_access_token    (data={"sub": email})
-    refresh_token   = await auth.create_refresh_token   (data={"sub": email})
+    access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE)
+    refresh_token_expires = timedelta(minutes=REFRESH_TOKEN_EXPIRE)
+    access_token    = await auth.create_access_token    (data={"sub": email}, expires_delta=access_token_expires)
+    refresh_token   = await auth.create_refresh_token   (data={"sub": email}, expires_delta=refresh_token_expires)
     await repository.update_token(user, refresh_token, session)
     return {"access_token": access_token, "refresh_token": refresh_token, "token_type": "bearer"}
