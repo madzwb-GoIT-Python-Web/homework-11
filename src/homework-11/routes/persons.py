@@ -46,17 +46,18 @@ async def reads_contacts(value: str = "", session: Session = Depends(db), curren
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=error_not_found)
     return _datas
 
+@persons.get("/{pid}/contacts", response_model=List[models.PersonContacts])
+async def read_contacts(pid: int, session: Session = Depends(db)):
+    _datas = await repository.read_contacts(pid, session)
+    if _datas is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=error_not_found)
+    return _datas
+
 router = APIRouter(prefix=f"/{name}", tags=[name])
 
 from .common import route
 exec(route, globals(), locals())
 
-# @router.get("/{pid}/contacts", response_model=models.PersonContacts)
-# async def read_contacts(pid: int, session: Session = Depends(db)):
-#     _datas = await repository.read_contacts(pid, session)
-#     if _datas is None:
-#         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=error_not_found)
-#     return _datas
 
 # module = __package__ + ".common"
 # if module not in sys.modules:

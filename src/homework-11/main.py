@@ -9,22 +9,24 @@ from sqlalchemy import text
 
 from database.connection import db, engine
 from routes import persons, contacts, types, auth
-
+from services.auth import auth as auth_service
 app = FastAPI()
 
 # @event.listens_for(engine, 'connect')
 # def on_connect(dbapi_connection, connection_record):
 #     for name, function in functions.registry.items():
 #         dbapi_connection.create_function(name, 1, function)
+# async def session(session: Session = Depends(db)):
+#     pass
 
-app.include_router(auth.router      , prefix='/api')
+app.include_router(auth.router      , prefix='/api')#, dependencies=[Depends(auth_service.get_current_active_user)])
 
-app.include_router(persons.persons  , prefix='/api')
+app.include_router(persons.persons  , prefix='/api', dependencies=[Depends(auth_service.get_current_active_user)])
 # app.include_router(persons.contacts , prefix='/api')
 
-app.include_router(persons.router   , prefix='/api')
-app.include_router(contacts.router  , prefix='/api')
-app.include_router(types.router     , prefix='/api')
+app.include_router(persons.router   , prefix='/api', dependencies=[Depends(auth_service.get_current_active_user)])
+app.include_router(contacts.router  , prefix='/api', dependencies=[Depends(auth_service.get_current_active_user)])
+app.include_router(types.router     , prefix='/api', dependencies=[Depends(auth_service.get_current_active_user)])
 
 
 @app.get("/")

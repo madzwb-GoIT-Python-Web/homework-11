@@ -24,7 +24,8 @@ async def signup(login: Login, session: Session = Depends(db)):
     
     login.password = auth.get_password_hash(login.password)
     user = await repository.create_user(login, session)
-    return {"user": user, "detail": "User successfully created."}
+    response = LoginResponse.model_validate(user)
+    return {"user": response, "detail": "User successfully created."}
 
 
 @router.post("/login", response_model=Token)
@@ -48,8 +49,10 @@ async def refresh_token(credentials: HTTPAuthorizationCredentials = Security(sec
     token = credentials.credentials
     email = await auth.decode_refresh_token(token)
     user = await repository.get_user_by_email(email, session)
+    if user is None:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid email.")
+    await repository.update_token(user, None, session)
     if user.refresh_token != token:
-        await repository.update_token(user, None, session)
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid refresh token.")
 
     access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE)

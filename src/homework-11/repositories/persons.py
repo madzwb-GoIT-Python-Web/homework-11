@@ -25,20 +25,24 @@ async def reads(skip: int, limit: int, session: Session) -> List[Type]:
         results.append(result)
     return results
 
-async def read(pid: int, session: Session) -> Type:
-    return session.query(DBType).filter(DBType.id == pid).first()
-
-async def update(pid: int, datas: Type, session: Session) -> Type | None:
+async def read(pid: int, session: Session) -> Type|None:
     _datas = session.query(DBType).filter(DBType.id == pid).first()
     if _datas:
-        _datas.first_name   = datas.first_name
-        _datas.last_name    = datas.last_name
-        _datas.born_date    = datas.born_date
+        return  Type.model_validate(_datas)
+    return None
+
+async def update(pid: int, datas: Type, session: Session) -> Type|None:
+    _datas = session.query(DBType).filter(DBType.id == pid).first()
+    if _datas:
+        _datas.first_name   = datas.first_name  if datas.first_name else _datas.first_name
+        _datas.last_name    = datas.last_name   if datas.last_name  else _datas.last_name
+        _datas.born_date    = datas.born_date   if datas.born_date  else _datas.born_date
         session.commit()
         session.refresh(_datas)
-    return _datas
+        return Type.model_validate(_datas)
+    return None
 
-async def delete(pid: int, session: Session)  -> Type | None:
+async def delete(pid: int, session: Session)  -> Type|None:
     _datas = session.query(DBType).filter(DBType.id == pid).first()
     if _datas:
         session.delete(_datas)
@@ -93,7 +97,10 @@ async def reads_contacts(value: str, session: Session) -> List[PersonContacts]:
         contacts.append(contact)
     return contacts
 
-async def read_contacts(pid: int, session: Session) -> PersonContacts:
-    result = session.query(DBType).join(DBType.contacts).filter(DBType.id == pid).first()
-    contacts = PersonContacts.model_validate(result)
+async def read_contacts(pid: int, session: Session) -> List[PersonContacts]:
+    result = session.query(DBType).join(DBType.contacts).filter(DBType.id == pid).all()
+    contacts = []
+    for r in result:
+        contact = PersonContacts.model_validate(r)
+        contacts.append(contact)
     return contacts

@@ -47,12 +47,12 @@
 
 route = """
 @router.get("/", response_model=List[Type])
-async def reads(skip: int = 0, limit: int = 100, session: Session = Depends(db), current_user: User = Depends(auth.get_current_active_user)):
+async def reads(skip: int = 0, limit: int = 100, session: Session = Depends(db)):
     return await repository.reads(skip, limit, session)
 
 
 @router.get("/{pid}", response_model=Type)
-async def read(pid: int, session: Session = Depends(db), current_user: User = Depends(auth.get_current_active_user)):
+async def read(pid: int, session: Session = Depends(db)):
     _datas = await repository.read(pid, session)
     if _datas is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=error_not_found)
@@ -60,12 +60,12 @@ async def read(pid: int, session: Session = Depends(db), current_user: User = De
 
 
 @router.post("/", response_model=Type)
-async def create(model: Type, session: Session = Depends(db), current_user: User = Depends(auth.get_current_active_user)):
+async def create(model: Type, session: Session = Depends(db)):
     return await repository.create(model, session)
 
 
 @router.put("/{pid}", response_model=Type)
-async def update(datas: Type, pid: int, session: Session = Depends(db), current_user: User = Depends(auth.get_current_active_user)):
+async def update(datas: Type, pid: int, session: Session = Depends(db)):
     _datas = await repository.update(pid, datas, session)
     if _datas is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=error_not_found)
@@ -73,7 +73,7 @@ async def update(datas: Type, pid: int, session: Session = Depends(db), current_
 
 
 @router.delete("/{pid}", response_model=Type)
-async def delete(pid: int, session: Session = Depends(db), current_user: User = Depends(auth.get_current_active_user)):
+async def delete(pid: int, session: Session = Depends(db)):
     _datas = await repository.delete(pid, session)
     if _datas is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=error_not_found)

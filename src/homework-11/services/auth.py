@@ -84,9 +84,9 @@ class Auth:
         return user
 
     async def get_current_active_user(self, token: str = Depends(oauth2_scheme), session: Session = Depends(db)):#, current_user: User = Depends(get_current_user)):
-        current_user = await self.get_current_user(token, session)
-        if current_user.disabled:
+        user = await self.get_current_user(token, session)
+        if user.disabled:
             raise HTTPException(status_code=400, detail="Inactive user.")
-        return current_user
+        return user
 
 auth = Auth()

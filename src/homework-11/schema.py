@@ -80,7 +80,7 @@ class Person(BaseModel):
     user_id:    int
     first_name: str = Field(max_length=128, default="")
     last_name:  str = Field(max_length=128, default="")
-    born_date:  date= Field()
+    born_date:  date
 
 
 class PersonContacts(Person):
@@ -100,16 +100,20 @@ class User(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
     id:         int
-    login:      str
+    login:      str = Field(min_length=5, max_length=16)
     email:      str
+    password:   str
     created_at: datetime
     disabled:   bool
     # avatar: str
 
 
 class LoginResponse(BaseModel):
-    user: User
-    detail: str = "User successfully created"
+    id:         int
+    login:      str = Field(min_length=5, max_length=16)
+    email:      str
+    created_at: datetime
+    disabled:   bool
 
 
 class Token(BaseModel):
