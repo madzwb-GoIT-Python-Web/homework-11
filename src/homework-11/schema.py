@@ -10,21 +10,21 @@ from pydantic import BaseModel, Field, field_validator, ConfigDict
 
 class Type(BaseModel):
     model_config = ConfigDict(from_attributes=True)
-    id:     int
+    id:     int = Field(default=0)
     name:   str = Field(max_length=64, default="")
 
 
 
 class Value(BaseModel):
     model_config = ConfigDict(from_attributes=True)
-    id:     int
+    id:     int = Field(default=0)
     value:  str = Field(max_length=128, default="")
 
 
 
 class Contact(Value):
-    person_id:  int
-    type_id:    int
+    person_id:  int = Field(default=0)
+    type_id:    int = Field(default=0)
 
 
 # TODO:
@@ -76,11 +76,11 @@ class Phone(Value, PhoneValidator):
 
 class Person(BaseModel):
     model_config = ConfigDict(from_attributes=True)
-    id:         int
-    user_id:    int
+    id:         int = Field(default=0)
+    user_id:    int = Field(default=0)
     first_name: str = Field(max_length=128, default="")
     last_name:  str = Field(max_length=128, default="")
-    born_date:  date
+    born_date:  date= Field(default=date.today())
 
 
 class PersonContacts(Person):
@@ -99,21 +99,21 @@ class Login(BaseModel):
 class User(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
-    id:         int
-    login:      str = Field(min_length=5, max_length=16, default="")
-    email:      str = Field(max_length=250, default="")
-    password:   str = Field(max_length=255, default="")
-    created_at: datetime
-    disabled:   bool= False
+    id:         int         = Field(default=0)
+    login:      str         = Field(min_length=5, max_length=16, default="")
+    email:      str         = Field(max_length=250, default="")
+    password:   str         = Field(max_length=255, default="")
+    created_at: datetime    = Field(default=datetime.now())
+    disabled:   bool        = Field(default=False)
     # avatar: str
 
 
 class LoginResponse(BaseModel):
-    id:         int
-    login:      str = Field(min_length=5, max_length=16, default="")
-    email:      str = Field(max_length=250, default="")
-    created_at: datetime
-    disabled:   bool
+    id:         int         = Field(default=0)
+    login:      str         = Field(min_length=5, max_length=16, default="")
+    email:      str         = Field(max_length=250, default="")
+    created_at: datetime    = Field(default=datetime.now())
+    disabled:   bool        = Field(default=False)
 
 
 class Token(BaseModel):
@@ -124,5 +124,5 @@ class Token(BaseModel):
 class Role(BaseModel):
     model_config = ConfigDict(from_attributes=True)
     
-    id:     int
+    id:     int = Field(default=0)
     name:   str = Field(max_length=64, default="")
