@@ -77,5 +77,13 @@ class User(Base):
 
     persons = relationship("Person"   , back_populates="user")
 
+
+
+class Role(Base):
+    __tablename__ = "roles"
+    id      = Column("id"   , Integer       , primary_key=True)
+    name    = Column("name" , String(64)    , nullable=False    , unique=True)
+
+
 metadata = MetaData()
 # target_metadata = Base.metadata

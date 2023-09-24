@@ -12,8 +12,8 @@ from routes import  auth,       \
                     type,       \
                     contact,    \
                     person,     \
-                    persons
-                    # role,       \
+                    persons,    \
+                    role
 
 from services.auth import auth as auth_service
 
@@ -27,7 +27,7 @@ app = FastAPI()
 #     pass
 
 app.include_router(auth.router      , prefix='/api')#, dependencies=[Depends(auth_service.get_current_active_user)])
-# app.include_router(role.router      , prefix='/api', dependencies=[Depends(auth_service.get_current_active_user)])
+app.include_router(role.router      , prefix='/api', dependencies=[Depends(auth_service.get_current_active_user)])
 
 app.include_router(persons.router   , prefix='/api', dependencies=[Depends(auth_service.get_current_active_user)])
 
