@@ -26,6 +26,9 @@ def upgrade() -> None:
     sa.PrimaryKeyConstraint('id'),
     sa.UniqueConstraint('name')
     )
+    op.execute("INSERT INTO roles (name) VALUES ('admin')")
+    op.execute("INSERT INTO roles (name) VALUES ('moder')")
+    op.execute("INSERT INTO roles (name) VALUES ('user')")
     # ### end Alembic commands ###
 
 
