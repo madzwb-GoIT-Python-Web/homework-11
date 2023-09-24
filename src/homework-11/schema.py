@@ -91,32 +91,32 @@ class PersonContacts(Person):
 
 
 class Login(BaseModel):
-    login:      str = Field(min_length=5, max_length=16)
-    password:   str = Field(min_length=6, max_length=10)
-    email:      str
+    login:      str = Field(min_length=5, max_length=16, default="")
+    password:   str = Field(min_length=6, max_length=10, default="")
+    email:      str = Field(max_length=250, default="")
 
 
 class User(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
     id:         int
-    login:      str = Field(min_length=5, max_length=16)
-    email:      str
-    password:   str
+    login:      str = Field(min_length=5, max_length=16, default="")
+    email:      str = Field(max_length=250, default="")
+    password:   str = Field(max_length=255, default="")
     created_at: datetime
-    disabled:   bool
+    disabled:   bool= False
     # avatar: str
 
 
 class LoginResponse(BaseModel):
     id:         int
-    login:      str = Field(min_length=5, max_length=16)
-    email:      str
+    login:      str = Field(min_length=5, max_length=16, default="")
+    email:      str = Field(max_length=250, default="")
     created_at: datetime
     disabled:   bool
 
 
 class Token(BaseModel):
-    access_token:   str
-    refresh_token:  str
+    access_token:   str = ""
+    refresh_token:  str = ""
     token_type:     str = "bearer"
