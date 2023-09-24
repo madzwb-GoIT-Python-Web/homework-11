@@ -18,7 +18,7 @@ from schema import User
 from services.auth import auth
 
 names = os.path.splitext(os.path.basename(__file__))[0]
-name = names[0:-1].capitalize() if names[-1] == 's' else names.capitalize()
+name = names.capitalize()
 error_not_found = f"{name} not found."
 
 router = APIRouter(prefix=f"/{name}", tags=[name])
