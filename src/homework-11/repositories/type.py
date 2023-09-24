@@ -1,8 +1,7 @@
-from database.schema import Type as DBType
-
-from typing import List
 from sqlalchemy.orm import Session
+from typing import List
 
+from database.schema import Type as DBType
 from schema import Type
 
 

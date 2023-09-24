@@ -2,17 +2,16 @@ import importlib
 import os
 import sys
 
-from typing import List
-
 from fastapi import APIRouter, HTTPException, Depends, status
 from sqlalchemy.orm import Session
+from typing import List
 
 from database.connection import db
 from schema import Type as Type
-import repositories.types as repository
+import repositories.type as repository
 
-from schema import User
-from services.auth import auth
+# from schema import User
+# from services.auth import auth
 
 names = os.path.splitext(os.path.basename(__file__))[0]
 name = names[0:-1].capitalize() if names[-1] == 's' else names.capitalize()
