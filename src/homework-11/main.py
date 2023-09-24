@@ -8,8 +8,15 @@ from sqlalchemy import text
 # import database.functions as functions
 
 from database.connection import db, engine
-from routes import persons, contacts, types, auth
+from routes import  auth,       \
+                    type,       \
+                    contact,    \
+                    person,     \
+                    persons
+                    # role,       \
+
 from services.auth import auth as auth_service
+
 app = FastAPI()
 
 # @event.listens_for(engine, 'connect')
@@ -20,13 +27,13 @@ app = FastAPI()
 #     pass
 
 app.include_router(auth.router      , prefix='/api')#, dependencies=[Depends(auth_service.get_current_active_user)])
-
-app.include_router(persons.persons  , prefix='/api', dependencies=[Depends(auth_service.get_current_active_user)])
-# app.include_router(persons.contacts , prefix='/api')
+# app.include_router(role.router      , prefix='/api', dependencies=[Depends(auth_service.get_current_active_user)])
 
 app.include_router(persons.router   , prefix='/api', dependencies=[Depends(auth_service.get_current_active_user)])
-app.include_router(contacts.router  , prefix='/api', dependencies=[Depends(auth_service.get_current_active_user)])
-app.include_router(types.router     , prefix='/api', dependencies=[Depends(auth_service.get_current_active_user)])
+
+app.include_router(person.router    , prefix='/api', dependencies=[Depends(auth_service.get_current_active_user)])
+app.include_router(contact.router   , prefix='/api', dependencies=[Depends(auth_service.get_current_active_user)])
+app.include_router(type.router      , prefix='/api', dependencies=[Depends(auth_service.get_current_active_user)])
 
 
 @app.get("/")
