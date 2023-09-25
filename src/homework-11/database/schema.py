@@ -75,7 +75,8 @@ class User(Base):
     # avatar          = Column("id"           , String(255)   , nullable=True)
     refresh_token   = Column("refresh_token", String(255)   , nullable=True)
 
-    persons = relationship("Person"   , back_populates="user")
+    persons     = relationship("Person" , back_populates="user")
+    user_roles  = relationship("Roles"  , back_populates="user")
 
 
 
@@ -83,6 +84,19 @@ class Role(Base):
     __tablename__ = "roles"
     id      = Column("id"   , Integer       , primary_key=True)
     name    = Column("name" , String(64)    , nullable=False    , unique=True)
+
+    user_roles   = relationship("Roles"  , back_populates="role")
+
+
+class Roles(Base):
+    __tablename__ = "user_roles"
+    id      = Column("id"       , Integer   , primary_key=True)
+    user_id = Column("user_id"  , Integer   , ForeignKey("users.id" , onupdate="CASCADE", ondelete="CASCADE") , nullable=False)
+    role_id = Column("role_id"  , Integer   , ForeignKey("roles.id" , onupdate="CASCADE", ondelete="CASCADE") , nullable=False)
+    __table_args__ = (UniqueConstraint("user_id", "role_id", name = "uc_user_roles"), )
+
+    user = relationship("User"  , back_populates="user_roles")
+    role = relationship("Role"  , back_populates="user_roles")
 
 
 metadata = MetaData()
