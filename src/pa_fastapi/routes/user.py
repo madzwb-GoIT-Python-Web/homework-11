@@ -1,21 +1,14 @@
-# import importlib
 import os
-# import sys
 
-# from datetime import date, datetime, timedelta
-from fastapi import APIRouter, HTTPException, Depends, status, Security
+from fastapi        import APIRouter, HTTPException, Depends, status, Security
 from sqlalchemy.orm import Session
-from typing import List
+from typing         import List
 
-# import schema as models
-# import database.schema as schema
-
-from database.connection import db
-from schema import Person as Type
 import repositories.person as repository
 
-# from schema import User
-from services.auth import auth
+from database.connection    import db
+from schema                 import Person as Type
+from services.auth          import auth
 
 names = os.path.splitext(os.path.basename(__file__))[0]
 name = names[0:-1].capitalize() if names[-1] == 's' else names.capitalize()
