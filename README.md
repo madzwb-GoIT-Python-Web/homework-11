@@ -1,3 +1,2 @@
 # pa_fastapi
-Personal Assistant with FastAPI.
-
+Personal Assistant - FastAPI version.
