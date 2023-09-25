@@ -55,6 +55,8 @@ async def read_contacts(pid: int, session: Session = Depends(db), user = Securit
 async def read_types(skip: int = 0, limit: int = 100, session: Session = Depends(db), user = Security(auth.get_user, scopes=["user"])):
     return await type.reads(skip, limit, session)
 
+
+
 @router.post("/person", response_model=Person)
 async def create_person(datas: PAPerson, session: Session = Depends(db), user = Security(auth.get_user, scopes=["user"])):
     _datas = Person.model_validate(datas.model_dump())
@@ -62,9 +64,31 @@ async def create_person(datas: PAPerson, session: Session = Depends(db), user = 
     _datas.user_id = user.id
     return await person.create(_datas, session)
 
+@router.put("/person/{pid}", response_model=Contact)
+async def update_person(datas: PAContact, pid: int, session: Session = Depends(db), user = Security(auth.get_user, scopes=["user"])):
+    _datas = Person.model_validate(datas.model_dump())
+    _datas.id = pid
+    return await person.update(pid, _datas, session)
+
+@router.delete("/person/{pid}", response_model=Contact)
+async def delete_person(pid: int, session: Session = Depends(db), user = Security(auth.get_user, scopes=["user"])):
+    return await person.delete(pid, session)
+
+
+
 @router.post("/contact", response_model=Contact)
 async def create_contact(datas: PAContact, session: Session = Depends(db), user = Security(auth.get_user, scopes=["user"])):
     _datas = Contact.model_validate(datas.model_dump())
     _datas.id = None
     # _datas.user_id = user.id
     return await contact.create(_datas, session)
+
+@router.put("/contact/{pid}", response_model=Contact)
+async def update_contact(datas: PAContact, pid: int, session: Session = Depends(db), user = Security(auth.get_user, scopes=["user"])):
+    _datas = Contact.model_validate(datas.model_dump())
+    _datas.id = pid
+    return await contact.update(pid, _datas, session)
+
+@router.delete("/contact/{pid}", response_model=Contact)
+async def delete_contact(pid: int, session: Session = Depends(db), user = Security(auth.get_user, scopes=["user"])):
+    return await contact.delete(pid, session)
