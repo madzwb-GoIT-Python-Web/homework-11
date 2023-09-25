@@ -42,8 +42,8 @@ dependencies = [
 
 
 [project.urls]
-"Homepage" = "https://github.com/madzwb-GoIT-Python-Web/homework-11"
-"Bug Tracker" = "https://github.com/madzwb-GoIT-Python-Web/homework-11/issues"
+"Homepage" = "https://github.com/madzwb-GoIT-Python-Web/pa_fastapi"
+"Bug Tracker" = "https://github.com/madzwb-GoIT-Python-Web/pa_fastapi/issues"
 
 # See https://github.com/pypa/setuptools_scm/blob/main/pyproject.toml
 [tool.setuptools_scm]
