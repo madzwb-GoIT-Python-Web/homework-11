@@ -31,6 +31,8 @@ def upgrade() -> None:
     sa.UniqueConstraint('email'),
     sa.UniqueConstraint('username')
     )
+    op.execute("INSERT INTO users (id, login, password, email, created_at, refresh_token, disabled) VALUES (NULL, 'admin', '$2b$12$BYSC86scFp1ETS7lBH289Ow5T4KQdnWru9J5mBL3Ym274q0wHyg0i', 'admin@localhost', NOW(), NULL, FALSE);")
+    op.execute("INSERT INTO users (id, login, password, email, created_at, refresh_token, disabled) VALUES (NULL, 'moder', '$2b$12$F3hxOit5FFOO/IM5oMJWJu71bVVUpzQgM4UKJRDbBZkPl4SNSVcI.', 'moder@localhost', NOW(), NULL, FALSE);")
     # ### end Alembic commands ###
 
 
