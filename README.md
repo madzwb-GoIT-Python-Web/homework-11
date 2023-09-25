@@ -1,2 +1,3 @@
-# homework-11
-homework-11
+# pa_fastapi
+Personal Assistant with FastAPI.
+
