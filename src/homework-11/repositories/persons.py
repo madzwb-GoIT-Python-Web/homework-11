@@ -1,5 +1,5 @@
 from datetime import date
-from sqlalchemy import func, and_
+from sqlalchemy import func, and_, any_
 from sqlalchemy.orm import Session
 from typing import List
 
@@ -13,7 +13,12 @@ from schema import PersonContacts as Type
 async def reads_persons_by_birthday(days: int, session: Session) -> List[Type]:
     result = session.query(DBType)\
                 .join(DBType.contacts)\
-                .filter(func.days_to_birthday(DBType.born_date, date.today()) <= days).all()
+                .filter(
+                    and_(
+                        DBType.born_date != None,
+                        func.days_to_birthday(DBType.born_date, date.today()) <= days
+                    )
+                ).all()
     persons:List[Type] = []
     for r in result:
         person = Type.model_validate(r)
