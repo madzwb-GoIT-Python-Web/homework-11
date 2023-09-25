@@ -17,15 +17,21 @@ class Type(BaseModel):
 
 class Value(BaseModel):
     model_config = ConfigDict(from_attributes=True)
+
     id:     int = Field(default=0)
     value:  str = Field(max_length=128, default="")
-
 
 
 class Contact(Value):
     person_id:  int = Field(default=0)
     type_id:    int = Field(default=0)
 
+class PAContact(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    person_id:  int = Field(default=0)
+    type_id:    int = Field(default=0)
+    value:  str = Field(max_length=128, default="")
 
 # TODO:
 class Telegram(Value):
@@ -73,10 +79,18 @@ class Phone(Value, PhoneValidator):
         return value
 
 
+class PAPerson(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
 
+    first_name: str = Field(max_length=128, default="")
+    last_name:  str = Field(max_length=128, default="")
+    born_date:  date= Field(default=date.today())
+
+# TODO: 
 class Person(BaseModel):
     model_config = ConfigDict(from_attributes=True)
-    id:         int = Field(default=0)
+
+    id:         int = Field(default=None)
     user_id:    int = Field(default=0)
     first_name: str = Field(max_length=128, default="")
     last_name:  str = Field(max_length=128, default="")
