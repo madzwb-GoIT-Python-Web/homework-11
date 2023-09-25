@@ -3,7 +3,7 @@ import os
 # import sys
 
 # from datetime import date, datetime, timedelta
-from fastapi import APIRouter, HTTPException, Depends, status
+from fastapi import APIRouter, HTTPException, Depends, status, Security
 from sqlalchemy.orm import Session
 from typing import List
 
@@ -15,13 +15,18 @@ from schema import Person as Type
 import repositories.person as repository
 
 # from schema import User
-# from services.auth import auth
+from services.auth import auth
 
 names = os.path.splitext(os.path.basename(__file__))[0]
 name = names[0:-1].capitalize() if names[-1] == 's' else names.capitalize()
 error_not_found = f"{name} not found."
 
 router = APIRouter(prefix=f"/{name}", tags=[name])
+
+create_scope    = Security(auth.get_user, scopes=["moder"])
+read_scope      = Security(auth.get_user, scopes=["moder"])
+update_scope    = Security(auth.get_user, scopes=["moder"])
+delete_scope    = Security(auth.get_user, scopes=["admin"])
 
 from .common import route
 exec(route, globals(), locals())

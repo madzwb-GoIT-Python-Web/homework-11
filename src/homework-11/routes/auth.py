@@ -14,7 +14,7 @@ from services.auth import auth
 router = APIRouter(prefix='/auth', tags=["auth"])
 security = HTTPBearer()
 
-ACCESS_TOKEN_EXPIRE     = 3
+ACCESS_TOKEN_EXPIRE     = 7
 REFRESH_TOKEN_EXPIRE    = 60
 
 @router.post("/signup", response_model=LoginResponse, status_code=status.HTTP_201_CREATED)
@@ -77,6 +77,6 @@ async def refresh_token(credentials: HTTPAuthorizationCredentials = Security(sec
     await repository.update_token(user, refresh_token, session)
     return {"access_token": access_token, "refresh_token": refresh_token, "token_type": "bearer"}
 
-@router.get('/roles', response_model=List[Role])
-async def roles(skip: int = 0, limit: int = 100, session: Session = Depends(db)):
-    return await role.reads(skip, limit, session)
+# @router.get('/roles', response_model=List[Role])
+# async def roles(skip: int = 0, limit: int = 100, session: Session = Depends(db)):
+#     return await role.reads(skip, limit, session)
