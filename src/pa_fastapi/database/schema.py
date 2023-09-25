@@ -55,10 +55,11 @@ class Type(Base):
 class Contact(Base):
     __tablename__ = "contacts"
     id          = Column("id"           , Integer       , primary_key=True)
-    value       = Column("value"        , String(128)   , nullable=False, unique=True)
+    value       = Column("value"        , String(128)   , nullable=False)
     type_id     = Column("type_id"      , Integer       , ForeignKey("types.id"     , onupdate="CASCADE", ondelete="CASCADE"), nullable=False)
     person_id   = Column("person_id"    , Integer       , ForeignKey("persons.id"   , onupdate="CASCADE", ondelete="CASCADE"), nullable=False)
 
+    __table_args__ = (UniqueConstraint("person_id", "value", name = "uc_contacts"), )
     person = relationship("Person"      , back_populates="contacts")
     type   = relationship("Type"        , back_populates="contacts")
 

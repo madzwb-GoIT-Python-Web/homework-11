@@ -14,7 +14,8 @@ from routes import  auth,       \
                     person,     \
                     persons,    \
                     user,       \
-                    role
+                    role,       \
+                    pa
 
 from services.auth import auth as auth_service
 
@@ -29,8 +30,13 @@ app = FastAPI()
 
 app.include_router(auth.router      , prefix='/api')#, dependencies=[Depends(auth_service.get_current_active_user)])
 
+# Personal assistant
+app.include_router(pa.router   , prefix='/api', dependencies=[Security(auth_service.get_user, scopes=["user"])])
+
+# Admin helpers
 app.include_router(persons.router   , prefix='/api', dependencies=[Security(auth_service.get_user, scopes=["admin"])])
 
+# CRUD
 app.include_router(person.router    , prefix='/api')#, dependencies=[Security(auth_service.get_current_active_user, scopes=["admin"])])
 app.include_router(contact.router   , prefix='/api')#, dependencies=[Security(auth_service.get_current_active_user, scopes=["admin"])])
 app.include_router(type.router      , prefix='/api')#, dependencies=[Security(auth_service.get_current_active_user, scopes=["moder"])])
