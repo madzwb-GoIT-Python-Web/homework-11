@@ -1,6 +1,6 @@
 import uvicorn
 
-from fastapi import FastAPI, Path, Query, Depends, HTTPException
+from fastapi import FastAPI, Path, Query, Depends, HTTPException, Security
 from sqlalchemy.orm import Session
 from sqlalchemy import text
 # from sqlalchemy import event
@@ -13,6 +13,7 @@ from routes import  auth,       \
                     contact,    \
                     person,     \
                     persons,    \
+                    user,       \
                     role
 
 from services.auth import auth as auth_service
@@ -27,13 +28,14 @@ app = FastAPI()
 #     pass
 
 app.include_router(auth.router      , prefix='/api')#, dependencies=[Depends(auth_service.get_current_active_user)])
-app.include_router(role.router      , prefix='/api', dependencies=[Depends(auth_service.get_current_active_user)])
 
-app.include_router(persons.router   , prefix='/api', dependencies=[Depends(auth_service.get_current_active_user)])
+app.include_router(persons.router   , prefix='/api', dependencies=[Security(auth_service.get_user, scopes=["admin"])])
 
-app.include_router(person.router    , prefix='/api', dependencies=[Depends(auth_service.get_current_active_user)])
-app.include_router(contact.router   , prefix='/api', dependencies=[Depends(auth_service.get_current_active_user)])
-app.include_router(type.router      , prefix='/api', dependencies=[Depends(auth_service.get_current_active_user)])
+app.include_router(person.router    , prefix='/api')#, dependencies=[Security(auth_service.get_current_active_user, scopes=["admin"])])
+app.include_router(contact.router   , prefix='/api')#, dependencies=[Security(auth_service.get_current_active_user, scopes=["admin"])])
+app.include_router(type.router      , prefix='/api')#, dependencies=[Security(auth_service.get_current_active_user, scopes=["moder"])])
+app.include_router(user.router      , prefix='/api')#, dependencies=[Security(auth_service.get_current_active_user, scopes=["moder"])])
+app.include_router(role.router      , prefix='/api')#, dependencies=[Security(auth_service.get_current_active_user, scopes=["moder"])])
 
 
 @app.get("/")

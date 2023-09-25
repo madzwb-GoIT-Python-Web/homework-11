@@ -24,14 +24,14 @@ error_not_found = f"{name} not found."
 router = APIRouter(prefix=f"/{name}", tags=[name])
 
 @router.get("/", response_model=List[Type])
-async def reads_persons(first_name: str = "", last_name: str = "", session: Session = Depends(db), current_user: User = Depends(auth.get_current_active_user)):
+async def reads_persons(first_name: str = "", last_name: str = "", session: Session = Depends(db), current_user: User = Depends(auth.get_user)):
     _datas = await repository.reads_persons(first_name, last_name, session)
     if _datas is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=error_not_found)
     return _datas
 
 @router.get("/birthday", response_model=List[Type])
-async def reads_by_bithday(days: int = 7, session: Session = Depends(db), current_user: User = Depends(auth.get_current_active_user)):
+async def reads_by_bithday(days: int = 7, session: Session = Depends(db), current_user: User = Depends(auth.get_user)):
     # date = datetime.now() + timedelta(7)
     # date = date.date()
     _datas = await repository.reads_persons_by_birthday(days, session)
@@ -41,7 +41,7 @@ async def reads_by_bithday(days: int = 7, session: Session = Depends(db), curren
 
 # contacts = APIRouter(prefix=f"/contacts", tags=["contacts"])
 @router.get("/contacts", response_model=List[Type])
-async def reads_contacts(value: str = "", session: Session = Depends(db), current_user: User = Depends(auth.get_current_active_user)):
+async def reads_contacts(value: str = "", session: Session = Depends(db), current_user: User = Depends(auth.get_user)):
     _datas = await repository.reads_contacts(value, session)
     if _datas is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=error_not_found)
