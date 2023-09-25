@@ -30,12 +30,12 @@ def upgrade() -> None:
     sa.UniqueConstraint('user_id', 'role_id', name='uc_user_roles')
     )
     # admin roles
-    op.execute("INSERT INTO user_roles (user_id, role_id) VALUES (0, 1)")
-    op.execute("INSERT INTO user_roles (user_id, role_id) VALUES (0, 2)")
-    op.execute("INSERT INTO user_roles (user_id, role_id) VALUES (0, 3)")
-    # moder roles
+    op.execute("INSERT INTO user_roles (user_id, role_id) VALUES (1, 1)")
     op.execute("INSERT INTO user_roles (user_id, role_id) VALUES (1, 2)")
     op.execute("INSERT INTO user_roles (user_id, role_id) VALUES (1, 3)")
+    # moder roles
+    op.execute("INSERT INTO user_roles (user_id, role_id) VALUES (2, 2)")
+    op.execute("INSERT INTO user_roles (user_id, role_id) VALUES (2, 3)")
     # ### end Alembic commands ###
 
 

@@ -3,13 +3,13 @@ requires = ["setuptools>=68.0", "setuptools_scm[toml]>=7.1.0"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "homework-11"
+name = "pa_fastapi"
 # version = "0.0.1"
 dynamic = ["version"]
 authors = [
   { name="Volodymyr Zawatsky", email="volodymyr.zawatsky@gmail.com" },
 ]
-description = "homework-11"
+description = "pa_fastapi"
 readme = "README.md"
 requires-python = ">=3.11"
 classifiers = [

@@ -29,10 +29,10 @@ def upgrade() -> None:
     sa.Column('refresh_token', sa.String(length=255), nullable=True),
     sa.PrimaryKeyConstraint('id'),
     sa.UniqueConstraint('email'),
-    sa.UniqueConstraint('username')
+    sa.UniqueConstraint('login')
     )
-    op.execute("INSERT INTO users (id, login, password, email, created_at, refresh_token, disabled) VALUES (NULL, 'admin', '$2b$12$BYSC86scFp1ETS7lBH289Ow5T4KQdnWru9J5mBL3Ym274q0wHyg0i', 'admin@localhost', NOW(), NULL, FALSE);")
-    op.execute("INSERT INTO users (id, login, password, email, created_at, refresh_token, disabled) VALUES (NULL, 'moder', '$2b$12$F3hxOit5FFOO/IM5oMJWJu71bVVUpzQgM4UKJRDbBZkPl4SNSVcI.', 'moder@localhost', NOW(), NULL, FALSE);")
+    op.execute("INSERT INTO users (login, password, email, created_at, refresh_token) VALUES ('admin', '$2b$12$BYSC86scFp1ETS7lBH289Ow5T4KQdnWru9J5mBL3Ym274q0wHyg0i', 'admin@localhost', NOW(), NULL);")
+    op.execute("INSERT INTO users (login, password, email, created_at, refresh_token) VALUES ('moder', '$2b$12$F3hxOit5FFOO/IM5oMJWJu71bVVUpzQgM4UKJRDbBZkPl4SNSVcI.', 'moder@localhost', NOW(), NULL);")
     # ### end Alembic commands ###
 
 
