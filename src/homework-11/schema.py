@@ -92,9 +92,9 @@ class PersonContacts(Person):
 
 class Login(BaseModel):
     login:      str = Field(min_length=5, max_length=16, default="")
-    password:   str = Field(min_length=6, max_length=10, default="")
+    password:   str = Field(min_length=6, max_length=64, default="")
     email:      str = Field(max_length=250, default="")
-
+    # role_id:    int = Field(default=0)
 
 class User(BaseModel):
     model_config = ConfigDict(from_attributes=True)
@@ -102,13 +102,15 @@ class User(BaseModel):
     id:         int         = Field(default=0)
     login:      str         = Field(min_length=5, max_length=16, default="")
     email:      str         = Field(max_length=250, default="")
-    password:   str         = Field(max_length=255, default="")
+    password:   str         = Field(max_length=64, default="")
     created_at: datetime    = Field(default=datetime.now())
     disabled:   bool        = Field(default=False)
     # avatar: str
 
 
 class LoginResponse(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
     id:         int         = Field(default=0)
     login:      str         = Field(min_length=5, max_length=16, default="")
     email:      str         = Field(max_length=250, default="")
@@ -121,8 +123,15 @@ class Token(BaseModel):
     refresh_token:  str = ""
     token_type:     str = "bearer"
 
+class TokenData(BaseModel):
+    username:   str         = ""
+    scopes:     List[str]   = []
+
 class Role(BaseModel):
     model_config = ConfigDict(from_attributes=True)
     
     id:     int = Field(default=0)
     name:   str = Field(max_length=64, default="")
+
+class UserRoles(User):
+    roles: List[Role]
