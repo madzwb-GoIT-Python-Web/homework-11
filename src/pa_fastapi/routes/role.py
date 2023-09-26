@@ -7,8 +7,9 @@ from typing         import List
 import repositories.role as repository
 
 from database.connection    import db
-from services.auth          import auth
+from routes.rates           import *
 from schema                 import Role as Type
+from services.auth          import auth
 
 names = os.path.splitext(os.path.basename(__file__))[0]
 name = names[0:-1].capitalize() if names[-1] == 's' else names.capitalize()

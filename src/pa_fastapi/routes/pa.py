@@ -12,6 +12,8 @@ import repositories.type    as type
 from database.connection    import db
 from database.schema        import Person as DBPerson
 
+from routes.rates import *
+
 from schema import PersonContacts
 from schema import User, Person, Contact, Type
 from schema import PAPerson, PAContact

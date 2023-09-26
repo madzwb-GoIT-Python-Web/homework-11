@@ -1,6 +1,10 @@
 import uvicorn
 
 from fastapi import FastAPI, Path, Query, Depends, HTTPException, Security
+
+from fastapi_limiter import FastAPILimiter
+from fastapi_limiter.depends import RateLimiter
+
 from sqlalchemy.orm import Session
 from sqlalchemy import text
 # from sqlalchemy import event
@@ -21,6 +25,17 @@ from services.auth import auth as auth_service
 
 app = FastAPI()
 
+
+# @app.on_event("startup")
+# async def startup():
+#     r = await redis.Redis(host='localhost', port=6379, db=0, encoding="utf-8", decode_responses=True)
+#     await FastAPILimiter.init(r)
+
+
+@app.get("/", dependencies=[Depends(RateLimiter(times=2, seconds=5))])
+async def index():
+    return {"msg": "Hello World"}
+
 # @event.listens_for(engine, 'connect')
 # def on_connect(dbapi_connection, connection_record):
 #     for name, function in functions.registry.items():
@@ -28,7 +43,7 @@ app = FastAPI()
 # async def session(session: Session = Depends(db)):
 #     pass
 
-app.include_router(auth.router      , prefix='/api')#, dependencies=[Depends(auth_service.get_current_active_user)])
+app.include_router(auth.router      , prefix='/api', dependencies=[Depends(RateLimiter(times=1, minutes=3))])
 
 # Personal assistant
 app.include_router(pa.router   , prefix='/api', dependencies=[Security(auth_service.get_user, scopes=["user"])])

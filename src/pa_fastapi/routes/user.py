@@ -7,6 +7,7 @@ from typing         import List
 import repositories.person as repository
 
 from database.connection    import db
+from routes.rates           import *
 from schema                 import Person as Type
 from services.auth          import auth
 
@@ -20,6 +21,11 @@ create_scope    = Security(auth.get_user, scopes=["admin"])
 read_scope      = Security(auth.get_user, scopes=["moder"])
 update_scope    = Security(auth.get_user, scopes=["admin"])
 delete_scope    = Security(auth.get_user, scopes=["admin"])
+
+rate_creation   = Depends(RateLimiter(times=1, minutes=1))
+rate_read       = Depends(RateLimiter(times=1, seconds=1))
+rate_update     = Depends(RateLimiter(times=1, minutes=1))
+rate_delete     = Depends(RateLimiter(times=1, minutes=1))
 
 from .common import route
 exec(route, globals(), locals())

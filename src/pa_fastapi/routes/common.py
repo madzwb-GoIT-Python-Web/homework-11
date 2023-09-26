@@ -46,12 +46,12 @@
 #     begin = list(locals().keys())
 
 route = """
-@router.get("/", response_model=List[Type], dependencies=[read_scope])
+@router.get("/", response_model=List[Type], dependencies=[read_scope, rate_read)
 async def reads(skip: int = 0, limit: int = 100, session: Session = Depends(db)):
     return await repository.reads(skip, limit, session)
 
 
-@router.get("/{pid}", response_model=Type, dependencies=[read_scope])
+@router.get("/{pid}", response_model=Type, dependencies=[read_scope, rate_read])
 async def read(pid: int, session: Session = Depends(db)):
     _datas = await repository.read(pid, session)
     if _datas is None:
@@ -59,12 +59,12 @@ async def read(pid: int, session: Session = Depends(db)):
     return _datas
 
 
-@router.post("/", response_model=Type, dependencies=[create_scope])
+@router.post("/", response_model=Type, dependencies=[create_scope, rate_create])
 async def create(model: Type, session: Session = Depends(db)):
     return await repository.create(model, session)
 
 
-@router.put("/{pid}", response_model=Type, dependencies=[update_scope])
+@router.put("/{pid}", response_model=Type, dependencies=[update_scope, rate_update])
 async def update(datas: Type, pid: int, session: Session = Depends(db)):
     _datas = await repository.update(pid, datas, session)
     if _datas is None:
@@ -72,7 +72,7 @@ async def update(datas: Type, pid: int, session: Session = Depends(db)):
     return _datas
 
 
-@router.delete("/{pid}", response_model=Type, dependencies=[delete_scope])
+@router.delete("/{pid}", response_model=Type, dependencies=[delete_scope, rate_delete])
 async def delete(pid: int, session: Session = Depends(db)):
     _datas = await repository.delete(pid, session)
     if _datas is None:

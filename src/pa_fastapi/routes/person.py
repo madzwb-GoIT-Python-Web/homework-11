@@ -7,6 +7,7 @@ from typing         import List
 import repositories.person as repository
 
 from database.connection    import db
+from routes.rates           import *
 from schema                 import Person as Type
 from services.auth          import auth
 

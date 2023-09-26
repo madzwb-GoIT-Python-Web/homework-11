@@ -7,11 +7,15 @@ from sqlalchemy.orm import Session
 
 import repositories.auth as repository
 import repositories.role as role
-from database.connection import db
-from schema import Login, LoginResponse, Token, User, Role, EmailRequest
+
+from database.connection    import db
+from routes.rates           import *
 
 from services.auth  import auth
 from services.email import email
+
+from schema import Login, LoginResponse, Token, User, Role, EmailRequest
+
 
 router = APIRouter(prefix='/auth', tags=["auth"])
 security = HTTPBearer()
