@@ -32,14 +32,15 @@ Base = declarative_base()
 class Person(Base):
     __tablename__ = "persons"
     id          = Column("id"           , Integer       , primary_key = True)
-    user_id     = Column("user_id"      , Integer       , ForeignKey("users.id" , onupdate="CASCADE", ondelete="CASCADE"), nullable=False)
+    user_id     = Column("user_id"      , Integer       , ForeignKey("users.id", onupdate="CASCADE", ondelete="CASCADE"), nullable=False)
     first_name  = Column("first_name"   , String(128)   , nullable=False)
     last_name   = Column("last_name"    , String(128)   , nullable=False)
     born_date   = Column("born_date"    , Date          , nullable=True)
+
     __table_args__ = (UniqueConstraint("user_id", "first_name", "last_name", name = "uc_persons"), )
 
-    user        = relationship("User"      , back_populates="persons")
-    contacts    = relationship("Contact"   , back_populates="person")
+    # contacts    = relationship("Contact"   , back_populates="person")
+    user        = relationship("User"      , foreign_keys=[user_id], backref="persons")
 
 
 
@@ -60,8 +61,10 @@ class Contact(Base):
     person_id   = Column("person_id"    , Integer       , ForeignKey("persons.id"   , onupdate="CASCADE", ondelete="CASCADE"), nullable=False)
 
     __table_args__ = (UniqueConstraint("person_id", "value", name = "uc_contacts"), )
-    person = relationship("Person"      , back_populates="contacts")
-    type   = relationship("Type"        , back_populates="contacts")
+
+    person = relationship("Person"      , foreign_keys=[person_id], backref="contacts")
+    # person  = relationship("Person" , back_populates="contacts")
+    type    = relationship("Type"   , back_populates="contacts")
 
 
 
@@ -72,13 +75,15 @@ class User(Base):
     password        = Column("password"     , String(255)   , nullable=False)
     email           = Column("email"        , String(250)   , nullable=False    , unique=True)
     created_at      = Column("created_at"   , DateTime      , nullable=False    , default=func.now())
-    disabled        = Column("disabled"     , Boolean       , nullable=True     , default=False)
+    disabled        = Column("disabled"     , Boolean       , nullable=False    , default=False)
+    confirmed       = Column("confirmed"    , Boolean       , nullable=False    , default=False)
+    person_id       = Column("person_id"    , Integer       , ForeignKey("persons.id", use_alter=True), nullable=True)
     # avatar          = Column("id"           , String(255)   , nullable=True)
     refresh_token   = Column("refresh_token", String(255)   , nullable=True)
 
-    persons     = relationship("Person" , back_populates="user")
+    # persons     = relationship("Person" , back_populates="user")
     user_roles  = relationship("Roles"  , back_populates="user")
-
+    person      = relationship("Person" , foreign_keys=[person_id], backref="users")
 
 
 class Role(Base):

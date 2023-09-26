@@ -1,24 +1,33 @@
 from __future__ import annotations
-from typing import Optional
 
+import os
+
+from dotenv import load_dotenv
 from jose import JWTError, jwt
 from fastapi import HTTPException, status, Depends, Security
 from fastapi.security import OAuth2PasswordBearer, SecurityScopes
 from passlib.context import CryptContext
 from datetime import datetime, timedelta
 from sqlalchemy.orm import Session
+from typing import Optional
 
 from database.connection import db
 
 import repositories.auth as repository
 from schema import User
+# from services.email import email
 
 class Auth:
+    load_dotenv()
     pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-    SECRET_KEY = "secret_key"
-    ALGORITHM = "HS256"
+
+    SECRET_KEY  = os.environ.get("SECRET_KEY")
+    ALGORITHM   = os.environ.get("ALGORITHM")
+    
     ACCESS_TOKEN_EXPIRE_MINUTES = 15
-    REFRESH_TOKEN_EXPIRE_HOURS = 24
+    REFRESH_TOKEN_EXPIRE_HOURS  = 24
+    EMAIL_TOKEN_EXPIRE_DAYS     =7
+
 
     oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/auth/login")
 
@@ -31,14 +40,39 @@ class Auth:
     def get_password_hash(self, password: str):
         return self.pwd_context.hash(password)
 
+    def create_email_token(self, data: dict, expires_delta: timedelta|None = None):
+        to_encode = data.copy()
+        if expires_delta is not None:
+            expire = datetime.utcnow() + expires_delta
+        else:
+            expire = datetime.utcnow() + timedelta(days=self.EMAIL_TOKEN_EXPIRE_DAYS)
+        expire = datetime.utcnow() + timedelta(days=7)
+        to_encode.update({"name": "email", "iat": datetime.utcnow(), "exp": expire})
+        encoded_email_token = jwt.encode(to_encode, self.SECRET_KEY, algorithm=self.ALGORITHM)
+        return encoded_email_token
+    
+    async def get_email_from_token(self, token: str):
+        try:
+            payload = jwt.decode(token, self.SECRET_KEY, algorithms=[self.ALGORITHM])
+            if "name" in payload and payload["name"] == "email":
+                email = payload["sub"]
+                return email
+            raise JWTError(f"Ivalid token:{payload}")
+        except JWTError as e:
+            print(e)
+            raise   HTTPException(
+                        status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+                        detail="Invalid token for email verification."
+                    )
+        
     # define a function to generate a new access token
-    async def create_access_token(self, data: dict, expires_delta: timedelta|None = None):#Optional[float] = None):
+    async def create_access_token(self, data: dict, expires_delta: timedelta|None = None):
         to_encode = data.copy()
         if expires_delta is not None:
             expire = datetime.utcnow() + expires_delta
         else:
             expire = datetime.utcnow() + timedelta(minutes=self.ACCESS_TOKEN_EXPIRE_MINUTES)
-        to_encode.update({"name": "access", "iat": datetime.utcnow(), "exp": expire})#, "scope": "access_token"})
+        to_encode.update({"name": "access", "iat": datetime.utcnow(), "exp": expire})
         encoded_access_token = jwt.encode(to_encode, self.SECRET_KEY, algorithm=self.ALGORITHM)
         return encoded_access_token
 
@@ -59,9 +93,9 @@ class Auth:
             if payload["name"] == "refresh":
                 email = payload["sub"]
                 return email
-            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail='Invalid scope for token')
+            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail='Invalid token name.')
         except JWTError:
-            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail='Could not validate credentials')
+            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail='Could not validate credentials.')
 
     async def get_user(
             self,

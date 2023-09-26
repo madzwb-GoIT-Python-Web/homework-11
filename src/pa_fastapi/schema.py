@@ -4,7 +4,7 @@ import csv
 
 from datetime import datetime, date
 from typing import List, Optional
-from pydantic import BaseModel, Field, field_validator, ConfigDict
+from pydantic import BaseModel, Field, field_validator, ConfigDict, EmailStr
 
 
 
@@ -104,7 +104,7 @@ class PersonContacts(Person):
 #     persons: List[Person]
 
 
-class Login(BaseModel):
+class Login(PAPerson):
     login:      str = Field(min_length=5, max_length=16, default="")
     password:   str = Field(min_length=6, max_length=64, default="")
     email:      str = Field(max_length=250, default="")
@@ -113,12 +113,14 @@ class Login(BaseModel):
 class User(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
-    id:         int         = Field(default=0)
+    id:         int|None    = Field(default=None)
     login:      str         = Field(min_length=5, max_length=16, default="")
     email:      str         = Field(max_length=250, default="")
     password:   str         = Field(max_length=64, default="")
     created_at: datetime    = Field(default=datetime.now())
     disabled:   bool        = Field(default=False)
+    confirmed:  bool        = Field(default=False)
+    person_id:  int|None    = Field(default=None)
     # avatar: str
 
 
@@ -149,3 +151,6 @@ class Role(BaseModel):
 
 class UserRoles(User):
     roles: List[Role]
+
+class EmailRequest(BaseModel):
+    email: EmailStr

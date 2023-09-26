@@ -1,15 +1,17 @@
 from datetime import timedelta
 from typing import List
 
-from fastapi import APIRouter, HTTPException, Depends, status, Security
+from fastapi import APIRouter, HTTPException, Depends, status, Security, BackgroundTasks, Request
 from fastapi.security import OAuth2PasswordRequestForm, HTTPAuthorizationCredentials, HTTPBearer
 from sqlalchemy.orm import Session
 
 import repositories.auth as repository
 import repositories.role as role
 from database.connection import db
-from schema import Login, LoginResponse, Token, User, Role
-from services.auth import auth
+from schema import Login, LoginResponse, Token, User, Role, EmailRequest
+
+from services.auth  import auth
+from services.email import email
 
 router = APIRouter(prefix='/auth', tags=["auth"])
 security = HTTPBearer()
@@ -18,14 +20,21 @@ ACCESS_TOKEN_EXPIRE     = 7
 REFRESH_TOKEN_EXPIRE    = 60
 
 @router.post("/signup", response_model=LoginResponse, status_code=status.HTTP_201_CREATED)
-async def signup(login: Login, session: Session = Depends(db)):
+async def signup(login: Login, background_tasks: BackgroundTasks, request: Request, session: Session = Depends(db)):
     exist_user = await repository.get_user_by_email(login.email, session)
     if exist_user:
         raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="Account already exists.")
     
     login.password = auth.get_password_hash(login.password)
     user = await repository.create_user(login, session)
-    response = LoginResponse.model_validate(user.model_dump())
+    response = LoginResponse.model_validate(user)
+    person = await repository.get_user_person(user.person_id, session)
+    background_tasks.add_task(
+        email.send_email,
+        user.email,
+        " ".join([person.first_name, person.last_name]),
+        request.base_url
+    )
     return response#{"user": response, "detail": "User successfully created."}
 
 
@@ -77,6 +86,34 @@ async def refresh_token(credentials: HTTPAuthorizationCredentials = Security(sec
     await repository.update_token(user, refresh_token, session)
     return {"access_token": access_token, "refresh_token": refresh_token, "token_type": "bearer"}
 
-# @router.get('/roles', response_model=List[Role])
-# async def roles(skip: int = 0, limit: int = 100, session: Session = Depends(db)):
-#     return await role.reads(skip, limit, session)
+@router.get('/confirmed_email/{token}')
+async def confirmed_email(token: str, session: Session = Depends(db)):
+    email = await auth.get_email_from_token(token)
+    user = await repository.get_user_by_email(email, session)
+    if user is None:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Verification error")
+    if user.confirmed:
+        return {"message": "Your email is already confirmed"}
+    await repository.confirmed_email(email, session)
+    return {"message": "Email confirmed"}
+
+@router.post('/request_email')
+async def   request_email(
+                body: EmailRequest,
+                background_tasks: BackgroundTasks,
+                request: Request,
+                session: Session = Depends(db)
+            ):
+    user = await repository.get_user_by_email(body.email, session)
+
+    if user.confirmed:
+        return {"message": "Your email is already confirmed"}
+    if user:
+        person = repository.get_user_person(user.person_id, session)
+        background_tasks.add_task(
+            email.send_email,
+            user.email,
+            " ".join([person.first_name, person.last_name]),
+            request.base_url
+        )
+    return {"message": "Check your email for confirmation."}
