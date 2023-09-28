@@ -70,16 +70,17 @@ class Contact(Base):
 
 class User(Base):
     __tablename__ = "users"
-    id              = Column("id"           , Integer       , primary_key=True)
-    login           = Column("login"        , String(50)    , nullable=False    , unique=True)
-    password        = Column("password"     , String(255)   , nullable=False)
-    email           = Column("email"        , String(250)   , nullable=False    , unique=True)
-    created_at      = Column("created_at"   , DateTime      , nullable=False    , default=func.now())
-    disabled        = Column("disabled"     , Boolean       , nullable=False    , default=False)
-    confirmed       = Column("confirmed"    , Boolean       , nullable=False    , default=False)
-    person_id       = Column("person_id"    , Integer       , ForeignKey("persons.id", use_alter=True), nullable=True)
+    id          = Column("id"           , Integer       , primary_key=True)
+    login       = Column("login"        , String(50)    , nullable=False    , unique=True)
+    password    = Column("password"     , String(255)   , nullable=False)
+    email       = Column("email"        , String(250)   , nullable=False    , unique=True)
+    created_at  = Column("created_at"   , DateTime      , nullable=False    , default=func.now())
+    disabled    = Column("disabled"     , Boolean       , nullable=False    , default=False)
+    confirmed   = Column("confirmed"    , Boolean       , nullable=False    , default=False)
+    person_id   = Column("person_id"    , Integer       , ForeignKey("persons.id", use_alter=True), nullable=True)
     # avatar          = Column("id"           , String(255)   , nullable=True)
-    refresh_token   = Column("refresh_token", String(255)   , nullable=True)
+    refresh_token       = Column("refresh_token"        , String(255)   , nullable=True)
+    reset_password_token= Column("reset_password_token" , String(255)   , nullable=True)
 
     # persons     = relationship("Person" , back_populates="user")
     user_roles  = relationship("Roles"  , back_populates="user")
