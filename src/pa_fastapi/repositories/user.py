@@ -1,4 +1,6 @@
+from redis          import Redis as Cache
 from sqlalchemy.orm import Session
+
 from typing import List
 
 from database.schema import User as DBType

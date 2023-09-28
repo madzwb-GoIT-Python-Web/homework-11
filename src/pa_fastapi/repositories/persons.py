@@ -1,6 +1,9 @@
 from datetime import date
-from sqlalchemy import func, and_, true
+
+from redis          import Redis as Cache
+from sqlalchemy     import func, and_, true
 from sqlalchemy.orm import Session
+
 from typing import List
 
 from database.schema import Contact

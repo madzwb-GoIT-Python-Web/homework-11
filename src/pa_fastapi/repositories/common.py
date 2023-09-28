@@ -1,43 +1,74 @@
-repository = """
-async def create(datas: Type, session: Session) -> Type:
-    datas = DBType(**dict(datas))
-    session.add(datas)
-    session.commit()
-    session.refresh(datas)
-    return datas
 
-async def reads(skip: int, limit: int, session: Session) -> List[Type]:
-    results: List[Type] = []
-    result = session.query(DBType).offset(skip).limit(limit).all()
-    for r in result:
-        result = Type.model_validate(r)
-        results.append(result)
-    return results
+prefix = """
+if __name__ == "__main__":
+    import os
+    prefix = os.path.splitext(os.path.basename(__file__))[0]
+else:
+    prefix = __name__
+
+def key(key):
+    return f'{prefix}:{str(key)}'
+
+"""
+
+repository = prefix + """
+async def create(datas: Type, session: Session, cache: Cache|None = None) -> Type:
+    record = DBType(**dict(datas))
+    session.add(record)
+    session.commit()
+    session.refresh(record)
+    model = Type.model_validate(record)
+    if cache is not None:
+        cache.set(key(record.id), pickle.dumps(model))
+    return model
+
+async def reads(skip: int, limit: int, session: Session, cache: Cache|None = None) -> List[Type]:
+    models: List[Type] = []
+    records = session.query(DBType).offset(skip).limit(limit).all()
+    for record in records:
+        model = Type.model_validate(record)
+        models.append(model)
+        if cache is not None:
+            cache.set(key(record.id), pickle.dumps(model))
+    return models
 
 async def read(pid: int, session: Session) -> Type|None:
-    _datas = session.query(DBType).filter(DBType.id == pid).first()
-    if _datas:
-        return  Type.model_validate(_datas)
-    return None
+    if cache is not None:
+        model = cache.get(key(record.id))
+    else:
+        model = None
+    if model is None:
+        record = session.query(DBType).filter(DBType.id == pid).first()
+        if record:
+            model = Type.model_validate(record)
+            if cache is not None:
+                cache.set(key(record.id), pickle.dumps(model))
+    else:
+        model = pickle.loads(model)
+    return model
 
-async def update(pid: int, datas: Type, session: Session) -> Type|None:
-    _datas = session.query(DBType).filter(DBType.id == pid).first()
-    if _datas:
+async def update(pid: int, datas: Type, session: Session, cache: Cache|None = None) -> Type|None:
+    record = session.query(DBType).filter(DBType.id == pid).first()
+    if record:
         values = datas.model_dump(exclude_defaults=True, exclude_none=True, exclude_unset=True)
         for name, value in values.items():
-            if hasattr(_datas, name):
-                setattr(_datas, name, value)
+            if hasattr(record, name):
+                setattr(record, name, value)
         else:
             session.commit()
-            session.refresh(_datas)
-        return Type.model_validate(_datas)
+            session.refresh(record)
+        model = Type.model_validate(record)
+        if cache is not None:
+            cache.set(key(record.id), pickle.dumps(model))
     return None
 
-async def delete(pid: int, session: Session)  -> Type|None:
-    _datas = session.query(DBType).filter(DBType.id == pid).first()
-    if _datas:
-        session.delete(_datas)
+async def delete(pid: int, session: Session, cache: Cache|None = None)  -> Type|None:
+    record = session.query(DBType).filter(DBType.id == pid).first()
+    if record:
+        if cache is not None:
+            cache.delete(key(record.id))
+        session.delete(record)
         session.commit()
-        session.refresh(_datas)
-    return _datas
+        session.refresh(record)
+    return record
 """
