@@ -51,7 +51,7 @@ class Email(Value):
 class PhoneValidator():
     mobile_codes = ["50", "63", "66", "67", "68", "73", "90", "91", "92", "93", "94", "95", "96", "97", "98", "99"]
     region_codes = []
-    with open("data/region_codes_ua.csv", 'r') as fd:
+    with open("src/pa_fastapi/data/region_codes_ua.csv", 'r') as fd:
         reader = csv.reader(fd, delimiter=',')
         for row in reader:
             codes = row[2].split('"')
@@ -121,6 +121,8 @@ class User(BaseModel):
     disabled:   bool        = Field(default=False)
     confirmed:  bool        = Field(default=False)
     person_id:  int|None    = Field(default=None)
+    refresh_token:          str|None = Field(max_length=255, default="")
+    reset_password_token:   str|None = Field(max_length=255, default="")
     # avatar: str
 
 
@@ -154,3 +156,7 @@ class UserRoles(User):
 
 class EmailRequest(BaseModel):
     email: EmailStr
+
+class Password(BaseModel):
+    password1:   str = Field(min_length=6, max_length=64, default="")
+    password2:   str = Field(min_length=6, max_length=64, default="")

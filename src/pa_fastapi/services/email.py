@@ -29,18 +29,17 @@ settings.TEMPLATE_FOLDER = Path(__file__).parent / 'templates'
 # )
 
 class Email():
-    async def send_email(self, email: EmailStr, username: str, host: str):
+    async def send_email(self, subject: str, email: EmailStr, username: str, host: str, token: str, template: str):
         try:
-            token_verification = auth.create_email_token({"sub": email})
             message = MessageSchema(
-                subject="Confirm your email ",
+                subject=subject,
                 recipients=[email],
-                template_body={"host": host, "username": username, "token": token_verification},
+                template_body={"host": host, "username": username, "token": token},
                 subtype=MessageType.html
             )
 
             fm = FastMail(settings)
-            await fm.send_message(message, template_name="email.html")
+            await fm.send_message(message, template_name=template)#"email.html")
         except ConnectionErrors as err:
             print(err)
 
