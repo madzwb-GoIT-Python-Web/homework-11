@@ -6,7 +6,7 @@ from typing         import List
 
 import repositories.type as repository
 
-from database.connection    import db
+from database.connection    import get_db, get_cache
 from routes.rates           import *
 from schema                 import Type as Type
 from services.auth          import auth

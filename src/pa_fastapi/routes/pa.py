@@ -9,7 +9,7 @@ import repositories.person  as person
 import repositories.persons as repository
 import repositories.type    as type
 
-from database.connection    import db
+from database.connection    import get_db
 from database.schema        import Person as DBPerson
 
 from routes.rates import *
@@ -30,7 +30,7 @@ router = APIRouter(prefix=f"/{name}", tags=[name])
 async def   reads_persons(
                 first_name  : str       = "",
                 last_name   : str       = "",
-                session     : Session   = Depends(db),
+                session     : Session   = Depends(get_db),
                 user        : User      = Security(auth.get_user, scopes=["user"])
             )\
      :
@@ -45,7 +45,7 @@ async def   reads_persons(
 @router.get("/birthday", response_model=List[PersonContacts])
 async def   reads_by_bithday(
                 days    : int       = 7,
-                session : Session   = Depends(db),
+                session : Session   = Depends(get_db),
                 user    : User      = Security(auth.get_user, scopes=["user"])
             )\
      :
@@ -60,7 +60,7 @@ async def   reads_by_bithday(
 @router.get("/contacts", response_model=List[PersonContacts])
 async def   reads_contacts(
                 value   : str       = "",
-                session : Session   = Depends(db),
+                session : Session   = Depends(get_db),
                 user    : User      = Security(auth.get_user, scopes=["user"])
             )\
     :
@@ -75,7 +75,7 @@ async def   reads_contacts(
 @router.get("/{pid}/contacts", response_model=List[PersonContacts])
 async def   read_contacts(
                 pid     : int,
-                session : Session   = Depends(db),
+                session : Session   = Depends(get_db),
                 user    : User      = Security(auth.get_user, scopes=["user"])
             )\
     :
@@ -91,7 +91,7 @@ async def   read_contacts(
 async def   read_types(
                 skip    : int       = 0,
                 limit   : int       = 100,
-                session : Session   = Depends(db),
+                session : Session   = Depends(get_db),
                 user    : User      = Security(auth.get_user, scopes=["user"])
             )\
     :
@@ -102,7 +102,7 @@ async def   read_types(
 @router.post("/person", response_model=Person)
 async def   create_person(
                 datas   : PAPerson,
-                session : Session   = Depends(db),
+                session : Session   = Depends(get_db),
                 user    : User      = Security(auth.get_user, scopes=["user"])
             )\
     :
@@ -115,7 +115,7 @@ async def   create_person(
 async def   update_person(
                 datas   : PAContact,
                 pid     : int,
-                session : Session = Depends(db),
+                session : Session = Depends(get_db),
                 # user    : User = Security(auth.get_user, scopes=["user"])
             )\
     :
@@ -126,7 +126,7 @@ async def   update_person(
 @router.delete("/person/{pid}", response_model=Contact)
 async def   delete_person(
                 pid     : int,
-                session : Session = Depends(db),
+                session : Session = Depends(get_db),
                 # user = Security(auth.get_user, scopes=["user"])
             )\
     :
@@ -137,7 +137,7 @@ async def   delete_person(
 @router.post("/contact", response_model=Contact)
 async def   create_contact(
                 datas   : PAContact,
-                session : Session = Depends(db),
+                session : Session = Depends(get_db),
                 #   user = Security(auth.get_user, scopes=["user"])
             )\
     :
@@ -150,7 +150,7 @@ async def   create_contact(
 async def   update_contact(
                 datas   : PAContact,
                 pid     : int,
-                session : Session = Depends(db),
+                session : Session = Depends(get_db),
                 # user = Security(auth.get_user, scopes=["user"])
             )\
     :
@@ -161,7 +161,7 @@ async def   update_contact(
 @router.delete("/contact/{pid}", response_model=Contact)
 async def   delete_contact(
                 pid     : int,
-                session : Session = Depends(db),
+                session : Session = Depends(get_db),
                 # user = Security(auth.get_user, scopes=["user"])
             )\
     :

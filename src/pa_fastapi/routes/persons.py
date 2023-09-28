@@ -6,7 +6,7 @@ from typing         import List
 
 import repositories.persons as repository
 
-from database.connection    import db
+from database.connection    import get_db
 from routes.rates           import *
 from schema                 import PersonContacts as Type
 from services.auth          import auth
@@ -18,28 +18,28 @@ error_not_found = f"{name} not found."
 router = APIRouter(prefix=f"/{name}", tags=[name])
 
 @router.get("/", response_model=List[Type])
-async def reads_persons(first_name: str = "", last_name: str = "", session: Session = Depends(db)):
+async def reads_persons(first_name: str = "", last_name: str = "", session: Session = Depends(get_db)):
     _datas = await repository.reads_persons(first_name, last_name, session)
     if _datas is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=error_not_found)
     return _datas
 
 @router.get("/birthday", response_model=List[Type])
-async def reads_by_bithday(days: int = 7, session: Session = Depends(db)):
+async def reads_by_bithday(days: int = 7, session: Session = Depends(get_db)):
     _datas = await repository.reads_persons_by_birthday(days, session)
     if _datas is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=error_not_found)
     return _datas
 
 @router.get("/contacts", response_model=List[Type])
-async def reads_contacts(value: str = "", session: Session = Depends(db)):
+async def reads_contacts(value: str = "", session: Session = Depends(get_db)):
     _datas = await repository.reads_contacts(value, session)
     if _datas is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=error_not_found)
     return _datas
 
 @router.get("/{pid}/contacts", response_model=List[Type])
-async def read_contacts(pid: int, session: Session = Depends(db)):
+async def read_contacts(pid: int, session: Session = Depends(get_db)):
     _datas = await repository.read_contacts(pid, session)
     if _datas is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=error_not_found)

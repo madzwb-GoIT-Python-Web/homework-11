@@ -6,7 +6,7 @@ from typing         import List
 
 import repositories.contact as repository
 
-from database.connection    import db
+from database.connection    import get_db
 from routes.rates           import *
 from schema                 import Contact as Type
 from services.auth          import auth
