@@ -1,6 +1,7 @@
 # import configparser
 import os
 import psycopg2
+import redis
 
 from dotenv import load_dotenv
 from sqlalchemy import create_engine
@@ -26,13 +27,26 @@ port    = os.environ.get("POSTGRES_PORT")
 URL = f"postgresql+psycopg2://{user}:{password}@{domain}:{port}/{database}"
 engine = create_engine(URL)
 
-session = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+Session = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 
 # Dependency
-def db():
-    db = session()
+def get_db():
+    session = Session()
     try:
-        yield db
+        yield session
     finally:
-        db.close()
+        session.close()
+
+redis_user    = os.environ.get("REDIS_USER")
+# redis_password= os.environ.get("REDIS_PASSWORD")
+# redis_database= os.environ.get("REDIS_DB")
+redis_domain  = os.environ.get("REDIS_DOMAIN")
+redis_port    = os.environ.get("REDIS_PORT")
+
+def get_cache():
+    session = redis.from_url(f"redis://{redis_domain}:{redis_port}", db=0)#, decode_responses=True)#, encoding="utf-8"
+    try:
+        yield session
+    finally:
+        session.close()

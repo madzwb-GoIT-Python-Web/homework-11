@@ -1,6 +1,11 @@
+import os
+import redis.asyncio as redis
 import uvicorn
 
+from dotenv import load_dotenv
+
 from fastapi import FastAPI, Path, Query, Depends, HTTPException, Security
+from fastapi.middleware.cors import CORSMiddleware
 
 from fastapi_limiter import FastAPILimiter
 from fastapi_limiter.depends import RateLimiter
@@ -11,7 +16,7 @@ from sqlalchemy import text
 
 # import database.functions as functions
 
-from database.connection import db, engine
+from database.connection import get_db, get_cache
 from routes import  auth,       \
                     type,       \
                     contact,    \
@@ -23,16 +28,27 @@ from routes import  auth,       \
 
 from services.auth import auth as auth_service
 
+load_dotenv()
 app = FastAPI()
 
+host = os.environ.get("FASTAPI_HOST")
+port = os.environ.get("FASTAPI_PORT")
 
-# @app.on_event("startup")
-# async def startup():
-#     r = await redis.Redis(host='localhost', port=6379, db=0, encoding="utf-8", decode_responses=True)
-#     await FastAPILimiter.init(r)
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[f"http://{host}:{port}"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+@app.on_event("startup")
+async def startup():
+    r = await redis.Redis(host='localhost', port=6379, db=0, encoding="utf-8", decode_responses=True)
+    await FastAPILimiter.init(r)
 
 
-@app.get("/", dependencies=[Depends(RateLimiter(times=2, seconds=5))])
+@app.get("/", dependencies=[Depends(RateLimiter(times=1, seconds=1))])
 async def index():
     return {"msg": "Hello World"}
 
@@ -40,10 +56,10 @@ async def index():
 # def on_connect(dbapi_connection, connection_record):
 #     for name, function in functions.registry.items():
 #         dbapi_connection.create_function(name, 1, function)
-# async def session(session: Session = Depends(db)):
+# async def session(session: Session = Depends(get_db)):
 #     pass
 
-app.include_router(auth.router      , prefix='/api', dependencies=[Depends(RateLimiter(times=1, minutes=3))])
+app.include_router(auth.router      , prefix='/api')
 
 # Personal assistant
 app.include_router(pa.router   , prefix='/api', dependencies=[Security(auth_service.get_user, scopes=["user"])])
@@ -64,7 +80,7 @@ def read_root():
     return {"message": "Hello World"}
 
 @app.get("/api/healthchecker")
-def healthchecker(session: Session = Depends(db)):
+def healthchecker(session: Session = Depends(get_db)):
     try:
         # Make request
         result = session.execute(text("SELECT * FROM alembic_version")).fetchone()
@@ -78,4 +94,4 @@ def healthchecker(session: Session = Depends(db)):
 
 if __name__ == "__main__":
     # from pathlib import Path
-    uvicorn.run(app, host="localhost", port=8000)#, root_path=str(Path.cwd() / "assets"))
+    uvicorn.run(app, host=host, port=int(port))#, root_path=str(Path.cwd() / "assets"))
