@@ -1,5 +1,5 @@
 import os
-from redis import Redis
+import redis.asyncio as redis
 import uvicorn
 
 from dotenv import load_dotenv
@@ -31,6 +31,11 @@ from pa_fastapi.services.auth import auth as auth_service
 load_dotenv()
 app = FastAPI()
 
+_ratelimiter = os.environ.get("FASTAPI_RATELIMITER")
+if _ratelimiter:
+    ratelimiter = int(_ratelimiter)
+else:
+    ratelimiter = False
 host = os.environ.get("FASTAPI_HOST")
 port = os.environ.get("FASTAPI_PORT")
 
@@ -44,13 +49,14 @@ app.add_middleware(
 
 @app.on_event("startup")
 async def startup():
-    r = Redis(host='127.0.0.1', port=6379, db=0, encoding="utf-8", decode_responses=True)
-    await FastAPILimiter.init(r)
+    if ratelimiter:
+        r = await redis.Redis(host='127.0.0.1', port=6379, db=0, encoding="utf-8", decode_responses=True)
+        await FastAPILimiter.init(r)
 
 
-@app.get("/", dependencies=[Depends(RateLimiter(times=1, seconds=1))])
-async def index():
-    return {"msg": "Hello World"}
+# @app.get("/", dependencies=[Depends(RateLimiter(times=1, seconds=1))])
+# async def index():
+#     return {"msg": "Hello World"}
 
 # @event.listens_for(engine, 'connect')
 # def on_connect(dbapi_connection, connection_record):

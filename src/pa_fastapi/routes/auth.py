@@ -1,4 +1,6 @@
-import pickle
+# import pickle
+import os
+from dotenv import load_dotenv
 
 from datetime import timedelta
 # from typing import List
@@ -6,6 +8,8 @@ from datetime import timedelta
 from fastapi import APIRouter, HTTPException, Depends, status, Security, BackgroundTasks, Request
 from fastapi.security import OAuth2PasswordRequestForm, HTTPAuthorizationCredentials, HTTPBearer
 from fastapi_limiter.depends import RateLimiter
+from starlette.requests import Request
+from starlette.responses import Response
 
 from sqlalchemy.orm import Session
 from redis import Redis as Cache
@@ -32,7 +36,22 @@ REFRESH_TOKEN_EXPIRE        = 30
 CONFIRM_EMAIL_TOKEN_EXPIRE  = 7*24*60
 RESET_PASSWORD_TOKEN_EXPIRE = 7
 
-@router.post("/signup", response_model=LoginResponse, status_code=status.HTTP_201_CREATED, dependencies=[Depends(RateLimiter(times=1, minutes=1))])
+load_dotenv()
+_ratelimiter = os.environ.get("FASTAPI_RATELIMITER")
+if _ratelimiter:
+    ratelimiter = int(_ratelimiter)
+else:
+    ratelimiter = False
+if not ratelimiter:
+    class RateLimiter(RateLimiter):
+        async def __call__(self, request: Request, response: Response):
+            return
+
+rate_signup = Depends(RateLimiter(times=1, minutes=1))
+rate_login  = Depends(RateLimiter(times=1, minutes=1))
+rate_op     = Depends(RateLimiter(times=1, seconds=1))
+
+@router.post("/signup", response_model=LoginResponse, status_code=status.HTTP_201_CREATED, dependencies=[rate_signup])
 async def   signup(
                 login: Login,
                 background_tasks: BackgroundTasks,
@@ -60,7 +79,7 @@ async def   signup(
     return response#{"user": response, "detail": "User successfully created."}
 
 
-@router.post("/login", response_model=Token, dependencies=[Depends(RateLimiter(times=1, minutes=1))])
+@router.post("/login", response_model=Token, dependencies=[rate_login])
 async def   login(
                 body    : OAuth2PasswordRequestForm = Depends(),
                 session : Session                   = Depends(get_db),
@@ -91,7 +110,7 @@ async def   login(
     return {"access_token": access_token, "refresh_token": refresh_token, "token_type": "bearer"}
 
 
-@router.get('/refresh_token', response_model=Token, dependencies=[Depends(RateLimiter(times=1, seconds=1))])
+@router.get('/refresh_token', response_model=Token, dependencies=[rate_op])
 async def   refresh_token(
                 credentials : HTTPAuthorizationCredentials  = Security(security),
                 session     : Session                       = Depends(get_db),
@@ -120,7 +139,7 @@ async def   refresh_token(
     await repository.update_refresh_token(user.id, refresh_token, session, cache)
     return {"access_token": access_token, "refresh_token": refresh_token, "token_type": "bearer"}
 
-@router.post('/request_confirm_email', dependencies=[Depends(RateLimiter(times=1, seconds=1))])
+@router.post('/request_confirm_email', dependencies=[rate_op])
 async def   request_email(
                 body: EmailRequest,
                 background_tasks: BackgroundTasks,
@@ -152,7 +171,7 @@ async def   request_email(
         )
     return {"message": "Check your email for confirmation."}
 
-@router.post('/request_reset_password', dependencies=[Depends(RateLimiter(times=1, seconds=1))])
+@router.post('/request_reset_password', dependencies=[rate_op])
 async def   request_reset_password(
                 body: EmailRequest,
                 background_tasks: BackgroundTasks,
@@ -185,7 +204,7 @@ async def   request_reset_password(
     return {"message": "Check your email for password reseting."}
 
 
-@router.get('/confirm_email/{token}', dependencies=[Depends(RateLimiter(times=1, seconds=1))])
+@router.get('/confirm_email/{token}', dependencies=[rate_op])
 async def   confirm_email(
                 token   : str,
                 session : Session   = Depends(get_db),
@@ -209,7 +228,7 @@ async def   confirm_email(
     await repository.confirmed_email(email, session, cache)
     return {"message": "Email confirmed."}
 
-@router.post('/reset_password', dependencies=[Depends(RateLimiter(times=1, seconds=1))])
+@router.post('/reset_password', dependencies=[rate_op])
 async def   reset_password(
                 passwords   : Password,
                 token       : str,

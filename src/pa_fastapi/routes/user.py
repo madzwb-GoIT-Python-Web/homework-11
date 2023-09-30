@@ -22,10 +22,5 @@ read_scope      = Security(auth.get_user, scopes=["moder"])
 update_scope    = Security(auth.get_user, scopes=["admin"])
 delete_scope    = Security(auth.get_user, scopes=["admin"])
 
-rate_creation   = Depends(RateLimiter(times=1, minutes=1))
-rate_read       = Depends(RateLimiter(times=1, seconds=1))
-rate_update     = Depends(RateLimiter(times=1, minutes=1))
-rate_delete     = Depends(RateLimiter(times=1, minutes=1))
-
 from .common import route
 exec(route, globals(), locals())
