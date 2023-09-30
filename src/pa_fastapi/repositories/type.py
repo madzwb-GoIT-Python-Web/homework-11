@@ -3,8 +3,8 @@ from sqlalchemy.orm import Session
 
 from typing import List
 
-from database.schema import Type as DBType
-from schema import Type
+from pa_fastapi.database.schema import Type as DBType
+from pa_fastapi.schema import Type
 
 from .common import repository
 exec(repository, globals(), locals())

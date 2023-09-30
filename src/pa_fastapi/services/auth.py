@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import os
-import pickle
+# import pickle
 
 from dotenv import load_dotenv
 from jose import JWTError, jwt
@@ -13,12 +13,11 @@ from datetime import datetime, timedelta
 from sqlalchemy.orm import Session
 from redis          import Redis as Cache
 
-from typing import Optional
+# from typing import Optional
 
-from database.connection import get_db, get_cache
-
-import repositories.auth as repository
-from schema import User
+import pa_fastapi.repositories.auth as repository
+from pa_fastapi.database.connection import get_db, get_cache
+# from pa_fastapi.schema import User
 # from services.email import email
 
 class Auth:

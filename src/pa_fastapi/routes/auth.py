@@ -1,25 +1,26 @@
 import pickle
 
 from datetime import timedelta
-from typing import List
+# from typing import List
 
 from fastapi import APIRouter, HTTPException, Depends, status, Security, BackgroundTasks, Request
 from fastapi.security import OAuth2PasswordRequestForm, HTTPAuthorizationCredentials, HTTPBearer
+from fastapi_limiter.depends import RateLimiter
 
 from sqlalchemy.orm import Session
 from redis import Redis as Cache
 
-import repositories.auth    as repository
-import repositories.role    as role
-import repositories.person  as person
+import pa_fastapi.repositories.auth    as repository
+# import pa_fastapi.repositories.role    as role
+# import pa_fastapi.repositories.person  as person
 
-from database.connection    import get_db, get_cache
-from routes.rates           import *
+from pa_fastapi.database.connection    import get_db, get_cache
+# from pa_fastapi.routes.rates           import *
 
-from services.auth  import auth     as auth_service
-from services.email import email    as email_service
+from pa_fastapi.services.auth  import auth     as auth_service
+from pa_fastapi.services.email import email    as email_service
 
-from schema import Login, LoginResponse, Token, User, Role, EmailRequest, Password
+from pa_fastapi.schema import Login, LoginResponse, Token, EmailRequest, Password
 
 
 router = APIRouter(prefix='/auth', tags=["auth"])

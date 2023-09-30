@@ -7,7 +7,7 @@ from pathlib import Path
 from pydantic import EmailStr
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
-from services.auth import auth
+# from services.auth import auth
 
 class Settings(ConnectionConfig, BaseSettings):
     load_dotenv()

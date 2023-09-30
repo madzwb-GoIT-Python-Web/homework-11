@@ -4,21 +4,21 @@ from fastapi        import APIRouter, HTTPException, Depends, status, Security
 from sqlalchemy.orm import Session
 from typing         import List
 
-import repositories.contact as contact
-import repositories.person  as person
-import repositories.persons as repository
-import repositories.type    as type
+import pa_fastapi.repositories.contact as contact
+import pa_fastapi.repositories.person  as person
+import pa_fastapi.repositories.persons as repository
+import pa_fastapi.repositories.type    as type
 
-from database.connection    import get_db
-from database.schema        import Person as DBPerson
+from pa_fastapi.database.connection    import get_db
+from pa_fastapi.database.schema        import Person as DBPerson
 
-from routes.rates import *
+from pa_fastapi.routes.rates import *
 
-from schema import PersonContacts
-from schema import User, Person, Contact, Type
-from schema import PAPerson, PAContact
+from pa_fastapi.schema import PersonContacts
+from pa_fastapi.schema import User, Person, Contact, Type
+from pa_fastapi.schema import PAPerson, PAContact
 
-from services.auth import auth
+from pa_fastapi.services.auth import auth
 
 names = os.path.splitext(os.path.basename(__file__))[0]
 name = names.upper()

@@ -16,17 +16,17 @@ from sqlalchemy import text
 
 # import database.functions as functions
 
-from database.connection import get_db, get_cache
-from routes import  auth,       \
-                    type,       \
-                    contact,    \
-                    person,     \
-                    persons,    \
-                    user,       \
-                    role,       \
-                    pa
+from pa_fastapi.database.connection import get_db, get_cache
+from pa_fastapi.routes import  auth,       \
+                                type,       \
+                                contact,    \
+                                person,     \
+                                persons,    \
+                                user,       \
+                                role,       \
+                                pa
 
-from services.auth import auth as auth_service
+from pa_fastapi.services.auth import auth as auth_service
 
 load_dotenv()
 app = FastAPI()
@@ -91,7 +91,9 @@ def healthchecker(session: Session = Depends(get_db)):
         print(e)
         raise HTTPException(status_code=500, detail="Error connecting to the database")
 
+def main():
+    uvicorn.run(app, host=host, port=int(port))#, root_path=str(Path.cwd() / "assets"))
 
 if __name__ == "__main__":
     # from pathlib import Path
-    uvicorn.run(app, host=host, port=int(port))#, root_path=str(Path.cwd() / "assets"))
+    main()

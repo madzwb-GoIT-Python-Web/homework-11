@@ -6,10 +6,10 @@ from sqlalchemy.orm import Session
 
 from typing import List
 
-from database.schema import Contact
-from database.schema import Person as DBType
-# from schema import Person as Type
-from schema import PersonContacts as Type
+from pa_fastapi.database.schema import Contact
+from pa_fastapi.database.schema import Person as DBType
+# from pa_fastapi.schema import Person as Type
+from pa_fastapi.schema import PersonContacts as Type
 
 
 

@@ -4,16 +4,16 @@ from sqlalchemy.orm import Session
 from redis          import Redis as Cache
 from typing import List
 
-import repositories.user  as user
-import repositories.user  as person
-import repositories.user  as roles
-import repositories.user  as role
+# import repositories.user  as user
+# import repositories.user  as person
+# import repositories.user  as roles
+# import repositories.user  as role
 
-from database.schema import User as DBUser, Role as DBRole, Roles as DBRoles, Person as DBPerson
+from pa_fastapi.database.schema import User as DBUser, Role as DBRole, Roles as DBRoles, Person as DBPerson
 # from database.schema import Role, Roles
 
-from services.auth import auth
-from schema import User, Login, UserRoles, Person
+from pa_fastapi.services.auth import auth
+from pa_fastapi.schema import User, Login, UserRoles, Person
 
 from .common import prefix
 exec(prefix, globals(), locals())

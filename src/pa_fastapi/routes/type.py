@@ -4,12 +4,12 @@ from fastapi        import APIRouter, HTTPException, Depends, status, Security
 from sqlalchemy.orm import Session
 from typing         import List
 
-import repositories.type as repository
+import pa_fastapi.repositories.type as repository
 
-from database.connection    import get_db, get_cache
-from routes.rates           import *
-from schema                 import Type as Type
-from services.auth          import auth
+from pa_fastapi.database.connection    import get_db, get_cache
+from pa_fastapi.routes.rates           import *
+from pa_fastapi.schema                 import Type as Type
+from pa_fastapi.services.auth          import auth
 
 names = os.path.splitext(os.path.basename(__file__))[0]
 name = names[0:-1].capitalize() if names[-1] == 's' else names.capitalize()
