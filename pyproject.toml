@@ -1,6 +1,6 @@
 [build-system]
-requires = ["setuptools>=68.0", "setuptools_scm[toml]>=7.1.0"]
-build-backend = "setuptools.build_meta"
+requires = ["setuptools>=68.0", "setuptools_scm[toml]>=7.1.0"] #"poetry-core>=1.0.0"
+build-backend = "setuptools.build_meta" #"poetry.core.masonry.api"
 
 [project]
 name = "pa_fastapi"
@@ -11,7 +11,7 @@ authors = [
 ]
 description = "pa_fastapi"
 readme = "README.md"
-requires-python = ">=3.11"
+requires-python = "==3.11.5"
 classifiers = [
     "Programming Language :: Python :: 3",
     "License :: OSI Approved :: MIT License",
@@ -20,7 +20,7 @@ classifiers = [
 
 dependencies = [
   "faker==19.4.0",
-  "psycopg2>=2.9.7",
+  "psycopg2-binary==2.9.8",
   "pydantic==2.3.0",
   "sqlalchemy==2.0.0",
   "alembic==1.12.0",
@@ -43,12 +43,13 @@ dependencies = [
 # main = "main:main"
 
 # [project.entry-points]
-# sorter = {sorter = "filesorter.sorter"}
+# pa = {sorter = "filesorter.sorter"}
 
 
 [project.urls]
 "Homepage" = "https://github.com/madzwb-GoIT-Python-Web/pa_fastapi"
 "Bug Tracker" = "https://github.com/madzwb-GoIT-Python-Web/pa_fastapi/issues"
+"Repository" = "https://github.com/madzwb-GoIT-Python-Web/pa_fastapi"
 
 # See https://github.com/pypa/setuptools_scm/blob/main/pyproject.toml
 [tool.setuptools_scm]
