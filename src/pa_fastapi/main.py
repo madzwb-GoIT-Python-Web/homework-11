@@ -35,9 +35,12 @@ _ratelimiter = os.environ.get("FASTAPI_RATELIMITER")
 if _ratelimiter:
     ratelimiter = int(_ratelimiter)
 else:
-    ratelimiter = False
+    ratelimiter = 0
 host = os.environ.get("FASTAPI_HOST")
 port = os.environ.get("FASTAPI_PORT")
+cache_domain = os.environ.get("REDIS_DOMAIN")
+cache_port   = os.environ.get("REDIS_PORT")
+
 
 app.add_middleware(
     CORSMiddleware,
@@ -50,7 +53,7 @@ app.add_middleware(
 @app.on_event("startup")
 async def startup():
     if ratelimiter:
-        r = await redis.Redis(host='127.0.0.1', port=6379, db=0, encoding="utf-8", decode_responses=True)
+        r = await redis.Redis(host=cache_domain, port=int(cache_port), db=0, encoding="utf-8", decode_responses=True)
         await FastAPILimiter.init(r)
 
 
