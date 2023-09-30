@@ -9,11 +9,11 @@ from sqlalchemy.orm import sessionmaker
 
 load_dotenv()
 
-user    = os.environ.get("POSTGRES_USER")
-password= os.environ.get("POSTGRES_PASSWORD")
-database= os.environ.get("POSTGRES_DB")
-domain  = os.environ.get("POSTGRES_DOMAIN")
-port    = os.environ.get("POSTGRES_PORT")
+db_user    = os.environ.get("POSTGRES_USER")
+db_password= os.environ.get("POSTGRES_PASSWORD")
+db_database= os.environ.get("POSTGRES_DB")
+db_domain  = os.environ.get("POSTGRES_DOMAIN")
+db_port    = os.environ.get("POSTGRES_PORT")
 
 # config = configparser.ConfigParser()
 # config.read("data/config.ini")
@@ -24,7 +24,7 @@ port    = os.environ.get("POSTGRES_PORT")
 # domain  = config.get("DB", "domain")
 # port    = config.get("DB", "port")
 
-URL = f"postgresql+psycopg2://{user}:{password}@{domain}:{port}/{database}"
+URL = f"postgresql+psycopg2://{db_user}:{db_password}@{db_domain}:{db_port}/{db_database}"
 engine = create_engine(URL)
 
 Session = sessionmaker(autocommit=False, autoflush=False, bind=engine)
@@ -38,14 +38,14 @@ def get_db():
     finally:
         session.close()
 
-redis_user    = os.environ.get("REDIS_USER")
+# cache_user    = os.environ.get("REDIS_USER")
 # redis_password= os.environ.get("REDIS_PASSWORD")
 # redis_database= os.environ.get("REDIS_DB")
-redis_domain  = os.environ.get("REDIS_DOMAIN")
-redis_port    = os.environ.get("REDIS_PORT")
+cache_domain  = os.environ.get("REDIS_DOMAIN")
+cache_port    = os.environ.get("REDIS_PORT")
 
 def get_cache():
-    session = redis.from_url(f"redis://{redis_domain}:{redis_port}", db=0)#, decode_responses=True)#, encoding="utf-8"
+    session = redis.from_url(f"redis://{cache_domain}:{cache_port}", db=0)#, decode_responses=True)#, encoding="utf-8"
     try:
         yield session
     finally:
