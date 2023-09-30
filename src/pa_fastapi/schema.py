@@ -51,7 +51,7 @@ class Email(Value):
 class PhoneValidator():
     mobile_codes = ["50", "63", "66", "67", "68", "73", "90", "91", "92", "93", "94", "95", "96", "97", "98", "99"]
     region_codes = []
-    with open("src/pa_fastapi/data/region_codes_ua.csv", 'r') as fd:
+    with open("pa_fastapi/data/region_codes_ua.csv", 'r') as fd:
         reader = csv.reader(fd, delimiter=',')
         for row in reader:
             codes = row[2].split('"')
