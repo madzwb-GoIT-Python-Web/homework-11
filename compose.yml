@@ -5,11 +5,11 @@ services:
     ports:
       - "6379:6379"
   postgres:
-    image: postgres:12
+    image: postgres:alpine
     environment:
-      POSTGRES_DB: rest_app
+      POSTGRES_DB: pa_fastapi
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: 567234
+      POSTGRES_PASSWORD: postgres
     ports:
       - "5432:5432"
     volumes:
