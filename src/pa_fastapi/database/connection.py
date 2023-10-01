@@ -10,7 +10,12 @@ from sqlalchemy.orm import sessionmaker
 load_dotenv()
 
 db_user    = os.environ.get("POSTGRES_USER")
-db_password= os.environ.get("POSTGRES_PASSWORD")
+secret_file = os.environ.get("POSTGRES_PASSWORD_FILE")
+if secret_file:
+    with open(secret_file, 'r') as fd:
+        db_password = ''.join(fd.readlines())
+else:
+    db_password  = os.environ.get("POSTGRES_PASSWORD")
 db_database= os.environ.get("POSTGRES_DB")
 db_domain  = os.environ.get("POSTGRES_DOMAIN")
 db_port    = os.environ.get("POSTGRES_PORT")

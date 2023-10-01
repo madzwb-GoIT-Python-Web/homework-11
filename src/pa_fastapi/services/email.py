@@ -17,7 +17,7 @@ settings.TEMPLATE_FOLDER = Path(__file__).parent / 'templates'
 secret_file = os.environ.get("MAIL_PASSWORD_FILE")
 if secret_file:
     with open(secret_file, 'r') as fd:
-        settings.MAIL_PASSWORD = fd.readline()
+        settings.MAIL_PASSWORD = ''.join(fd.readlines())
 # conf = ConnectionConfig(
 #     MAIL_USERNAME="example@meta.ua",
 #     MAIL_PASSWORD="secretPassword",

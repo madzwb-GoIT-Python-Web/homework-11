@@ -27,7 +27,7 @@ class Auth:
     secret_file = os.environ.get("SECRET_KEY_FILE")
     if secret_file:
         with open(secret_file, 'r') as fd:
-            SECRET_KEY = fd.readlines()
+            SECRET_KEY = ''.join(fd.readlines())
     else:
         SECRET_KEY  = os.environ.get("SECRET_KEY")
     ALGORITHM   = os.environ.get("ALGORITHM")
