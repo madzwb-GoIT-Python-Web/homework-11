@@ -18,6 +18,7 @@ secret_file = os.environ.get("MAIL_PASSWORD_FILE")
 if secret_file:
     with open(secret_file, 'r') as fd:
         settings.MAIL_PASSWORD = ''.join(fd.readlines())
+print(settings.MAIL_PASSWORD)
 # conf = ConnectionConfig(
 #     MAIL_USERNAME="example@meta.ua",
 #     MAIL_PASSWORD="secretPassword",

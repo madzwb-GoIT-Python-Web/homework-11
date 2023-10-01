@@ -16,6 +16,7 @@ if secret_file:
         db_password = ''.join(fd.readlines())
 else:
     db_password  = os.environ.get("POSTGRES_PASSWORD")
+print(db_password)
 db_database= os.environ.get("POSTGRES_DB")
 db_domain  = os.environ.get("POSTGRES_DOMAIN")
 db_port    = os.environ.get("POSTGRES_PORT")

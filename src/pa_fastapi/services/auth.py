@@ -30,6 +30,7 @@ class Auth:
             SECRET_KEY = ''.join(fd.readlines())
     else:
         SECRET_KEY  = os.environ.get("SECRET_KEY")
+    print(SECRET_KEY)
     ALGORITHM   = os.environ.get("ALGORITHM")
     
     ACCESS_TOKEN_EXPIRE         = 15
