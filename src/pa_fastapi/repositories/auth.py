@@ -100,7 +100,7 @@ async def update_reset_password_token(user_id: int, token: str|None, session: Se
         return model
     return None
 
-async def confirmed_email(email: str, session: Session, cache: Cache|None = None) -> User|None:
+async def confirm_email(email: str, session: Session, cache: Cache|None = None) -> User|None:
     user = session.query(DBUser).filter(DBUser.email == email).first()
     if user:
         user.confirmed = True

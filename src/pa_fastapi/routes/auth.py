@@ -225,7 +225,7 @@ async def   confirm_email(
     
     if user.confirmed:
         return {"message": "Your email is already confirmed."}
-    await repository.confirmed_email(email, session, cache)
+    await repository.confirm_email(email, session, cache)
     return {"message": "Email confirmed."}
 
 @router.post('/reset_password', dependencies=[rate_op])
