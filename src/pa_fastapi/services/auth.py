@@ -27,10 +27,9 @@ class Auth:
     secret_file = os.environ.get("SECRET_KEY_FILE")
     if secret_file:
         with open(secret_file, 'r') as fd:
-            SECRET_KEY = ''.join(fd.readlines())
+            SECRET_KEY = ''.join([line.strip() for line in fd.readlines()])
     else:
         SECRET_KEY  = os.environ.get("SECRET_KEY")
-    print(SECRET_KEY)
     ALGORITHM   = os.environ.get("ALGORITHM")
     
     ACCESS_TOKEN_EXPIRE         = 15
