@@ -14,6 +14,7 @@ from schema import Base
 from functions import days_to_birthday
 register_entities([days_to_birthday,])
 
+from connection import URL
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
 config = context.config
@@ -29,6 +30,7 @@ if config.config_file_name is not None:
 # target_metadata = mymodel.Base.metadata
 target_metadata = Base.metadata
 
+config.set_main_option("sqlalchemy.url", URL)
 # other values from the config, defined by the needs of env.py,
 # can be acquired:
 # my_important_option = config.get_main_option("my_important_option")
