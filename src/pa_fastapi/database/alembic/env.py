@@ -10,11 +10,11 @@ from alembic_utils.replaceable_entity import register_entities
 
 current = os.path.dirname(os.path.realpath(__file__))
 sys.path.append(os.path.dirname(current))
-from schema import Base
-from functions import days_to_birthday
+from pa_fastapi.database.schema import Base
+from pa_fastapi.database.functions import days_to_birthday
 register_entities([days_to_birthday,])
 
-from connection import URL
+from pa_fastapi.database.connection import URL
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
 config = context.config
@@ -32,6 +32,7 @@ target_metadata = Base.metadata
 
 config.set_main_option("sqlalchemy.url", URL)
 config.set_main_option("script_location", current)
+
 # other values from the config, defined by the needs of env.py,
 # can be acquired:
 # my_important_option = config.get_main_option("my_important_option")
