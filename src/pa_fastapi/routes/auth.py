@@ -215,9 +215,9 @@ async def   confirm_email(
     # user = await repository.get_user_by_email(email, session, None)
     
     # if user is None:
-    #     raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Verification error.")
-    if token != user.refresh_token:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token.")
+    #     raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Confirmation error.")
+    # if token != user.confirm_token:
+    #     raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token.")
     if user is None:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid email.")
     if user.disabled:
