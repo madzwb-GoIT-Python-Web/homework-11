@@ -1,4 +1,4 @@
-"""add users.reset_password_token
+"""Add users.reset_password_token
 
 Revision ID: c18d8d8167ae
 Revises: f5887e80ac9d

@@ -1,4 +1,4 @@
-"""add user roles.
+"""Add user roles.
 
 Revision ID: 4312ea33ffd6
 Revises: c5a650ebbcba

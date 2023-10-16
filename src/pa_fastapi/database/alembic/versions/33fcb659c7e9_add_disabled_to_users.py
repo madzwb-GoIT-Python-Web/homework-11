@@ -1,4 +1,4 @@
-"""add disabled to users
+"""Add disabled to users
 
 Revision ID: 33fcb659c7e9
 Revises: ca3c39708084

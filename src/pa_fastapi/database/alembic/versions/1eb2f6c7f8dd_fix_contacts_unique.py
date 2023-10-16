@@ -1,4 +1,4 @@
-"""fix contacts unique.
+"""Fix contacts unique.
 
 Revision ID: 1eb2f6c7f8dd
 Revises: 4312ea33ffd6

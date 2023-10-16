@@ -1,4 +1,4 @@
-"""add email confirmation
+"""Add email confirmation
 
 Revision ID: f5887e80ac9d
 Revises: 1eb2f6c7f8dd

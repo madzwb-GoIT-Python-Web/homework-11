@@ -1,4 +1,4 @@
-"""add user to persons relationship.
+"""Add user to persons relationship.
 
 Revision ID: 85815a1eec80
 Revises: 33fcb659c7e9

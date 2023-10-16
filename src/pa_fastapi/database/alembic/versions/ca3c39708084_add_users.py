@@ -1,4 +1,4 @@
-"""add_users
+"""add users
 
 Revision ID: ca3c39708084
 Revises: 4c048ca802f9
