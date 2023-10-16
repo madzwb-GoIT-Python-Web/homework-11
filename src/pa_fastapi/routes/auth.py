@@ -71,10 +71,12 @@ async def   signup(
     token = auth_service.create_token({"name": "email", "sub": user.email}, CONFIRM_EMAIL_TOKEN_EXPIRE)
     background_tasks.add_task(
         email_service.send_email,
+        "Confirm email",
         user.email,
         " ".join([person.first_name, person.last_name]),
         request.base_url,
-        token
+        token,
+        "confirm_email.html"
     )
     return response#{"user": response, "detail": "User successfully created."}
 
