@@ -14,7 +14,7 @@ from pa_fastapi.database.schema import Base
 from pa_fastapi.database.functions import days_to_birthday
 register_entities([days_to_birthday,])
 
-from pa_fastapi.database.connection import URL
+# from pa_fastapi.database.connection import URL
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
 config = context.config
@@ -30,8 +30,8 @@ if config.config_file_name is not None:
 # target_metadata = mymodel.Base.metadata
 target_metadata = Base.metadata
 
-config.set_main_option("sqlalchemy.url", URL)
-config.set_main_option("script_location", current)
+# config.set_main_option("sqlalchemy.url", URL)
+# config.set_main_option("script_location", current)
 
 # other values from the config, defined by the needs of env.py,
 # can be acquired:
