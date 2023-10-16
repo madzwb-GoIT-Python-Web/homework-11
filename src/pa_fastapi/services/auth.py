@@ -25,6 +25,8 @@ class Auth:
     pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
     secret_file = os.environ.get("SECRET_KEY_FILE")
+    if secret_file and not os.path.exists(secret_file):
+        secret_file = os.path.join(os.getcwd(), secret_file)
     if secret_file:
         with open(secret_file, 'r') as fd:
             SECRET_KEY = ''.join([line.strip() for line in fd.readlines()])

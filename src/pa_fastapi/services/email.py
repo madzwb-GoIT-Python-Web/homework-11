@@ -15,6 +15,8 @@ class Settings(ConnectionConfig, BaseSettings):
 settings = Settings()
 settings.TEMPLATE_FOLDER = Path(__file__).parent / 'templates'
 secret_file = os.environ.get("MAIL_PASSWORD_FILE")
+if secret_file and not os.path.exists(secret_file):
+    secret_file = os.path.join(os.getcwd(), secret_file)
 if secret_file:
     with open(secret_file, 'r') as fd:
         settings.MAIL_PASSWORD = ''.join([line.strip() for line in fd.readlines()])
