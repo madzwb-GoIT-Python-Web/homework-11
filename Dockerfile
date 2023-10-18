@@ -51,6 +51,9 @@ RUN apt-get install -y python3-psycopg2
 # Copy the source code into the container.
 COPY . .
 
+RUN chown -R appuser:appuser /app
+RUN chmod 755 /app
+
 RUN pip install  --no-cache-dir .
 
 USER appuser
