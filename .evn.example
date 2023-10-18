@@ -1,0 +1,33 @@
+FASTAPI_HOST    = localhost
+FASTAPI_PORT    = 8000
+FASTAPI_RATELIMITER = 0
+SECRET_KEY_FILE  = secrets/fastapi.key
+
+POSTGRES_USER       = postgres
+POSTGRES_PASSWORD   = 
+POSTGRES_DB         = pa
+POSTGRES_DOMAIN     = localhost
+POSTGRES_PORT       = 5432
+POSTGRES_PASSWORD_FILE  = secrets/postgres.key
+
+ALGORITHM   = "HS256"
+
+MAIL_FROM_NAME  = "Personal Assistant"
+MAIL_USERNAME   = "from@domain"
+MAIL_PASSWORD   = 
+MAIL_FROM       = "from@domain"
+MAIL_PORT       = 465
+MAIL_SERVER     = "smtp.domain"
+MAIL_STARTTLS   = False
+MAIL_SSL_TLS    = True
+USE_CREDENTIALS = True
+VALIDATE_CERTS  = True
+MAIN_PASSWORD_FILE  = secrets/mail.key
+
+DEFAULT_RATE_CREATE = 1
+DEFAULT_RATE_READ   = 1
+DEFAULT_RATE_UPDATE = 1
+DEFAULT_RATE_DELETE = 1
+
+REDIS_DOMAIN    = localhost
+REDIS_PORT      = 6379
