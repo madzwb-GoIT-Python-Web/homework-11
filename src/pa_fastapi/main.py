@@ -15,6 +15,7 @@ from sqlalchemy import text
 # from sqlalchemy import event
 
 # import database.functions as functions
+import pa_fastapi.database.migration as migration
 
 from pa_fastapi.database.connection import get_db, get_cache
 from pa_fastapi.routes import  auth,       \
@@ -29,6 +30,7 @@ from pa_fastapi.routes import  auth,       \
 from pa_fastapi.services.auth import auth as auth_service
 
 load_dotenv()
+
 app = FastAPI()
 
 _ratelimiter = os.environ.get("FASTAPI_RATELIMITER")
