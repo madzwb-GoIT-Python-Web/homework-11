@@ -1,0 +1,117 @@
+# Comments are provided throughout this file to help you get started.
+# If you need more help, visit the Docker compose reference guide at
+# https://docs.docker.com/compose/compose-file/
+
+# Here the instructions define your application as a service called "server".
+# This service is built from the Dockerfile in the current directory.
+# You can add other services your application may depend on here, such as a
+# database or a cache. For examples, see the Awesome Compose repository:
+# https://github.com/docker/awesome-compose
+services:
+  server:
+    env_file:
+      - ./env/.env
+    image: pa_fastapi
+    # build:
+    #   context: .
+    ports:
+      - ${FASTAPI_PORT}:${FASTAPI_PORT}
+
+    healthcheck:
+      test: [ "CMD", "curl --fail http://localhost:8000/health/  || exit 1" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    secrets:
+      - fastapi
+      - mail
+      - db-password
+    environment:
+      - SECRET_KEY_FILE=/run/secrets/fastapi
+      - MAIL_PASSWORD_FILE=/run/secrets/mail
+      - POSTGRES_PASSWORD_FILE=/run/secrets/db-password
+    # command: '/bin/sh -c "cat $$ALEMBIC/alembic/env.py" && /bin/sh -c "cat $$ALEMBIC/alembic.ini" && /bin/sh -c "alembic -c $$ALEMBIC/alembic.ini upgrade head"'
+    # alembic -c ${ALEMBIC}/alembic.ini upgrade head
+    #ls && cd /usr/local/lib/python3.11/site-packages/pa_fastapi/database && alembic upgrade head && cd / && python -m pa_fastapi.main
+      # - alembic -c /usr/local/lib/python3.11/site-packages/pa_fastapi/database/alembic.ini upgrade head
+      #  && python -m pa_fastapi.main"
+# The commented out section below is an example of how to define a PostgreSQL
+# database that your application can use. `depends_on` tells Docker Compose to
+# start the database before your application. The `db-data` volume persists the
+# database data between container restarts. The `db-password` secret is used
+# to set the database password. You must create `db/password.txt` and add
+# a password of your choosing to it before running `docker compose up`.
+    depends_on:
+      db:
+        condition: service_healthy
+      cache:
+        condition: service_healthy
+    volumes:
+      - server:/usr/local/lib/python3.11/site-packages/pa_fastapi
+
+  db:
+    env_file:
+      - ./env/postgres.env
+    image: postgres
+    restart: always
+    user: ${POSTGRES_USER}
+    # password: ${POSTGRES_PASSWORD}
+    secrets:
+      - db-password
+    volumes:
+      - db:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_PASSWORD_FILE=/run/secrets/db-password
+    ports:
+      - ${POSTGRES_PORT}:${POSTGRES_PORT}
+    healthcheck:
+      test: [ "CMD", "pg_isready" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+  
+  cache:
+    env_file:
+      - ./env/redis.env
+    image: redis
+    restart: always
+    ports:
+      - ${REDIS_PORT}:${REDIS_PORT}
+    healthcheck:
+      test: ["CMD-SHELL", "redis-cli ping | grep PONG"]
+      interval: 1s
+      timeout: 3s
+      retries: 5
+    command: redis-server --save 20 1 --loglevel warning #--requirepass eYVX7EwVmmxKPCDmwMtyKVge8oLd2t81
+    volumes: 
+      - cache:/data
+
+volumes:
+  db:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /d/wsl/docker/pa/db
+  cache:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /d/wsl/docker/pa/cache
+  server:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /d/wsl/docker/pa/server
+secrets:
+  db-password:
+    file: secrets/postgres.key
+  fastapi:
+    file: secrets/fastapi.key
+  mail:
+    file: secrets/mail.key
+  
+
