@@ -11,7 +11,7 @@ authors = [
 ]
 description = "pa_fastapi"
 readme = "README.md"
-requires-python = "==3.11.5"
+requires-python = "==3.11.6"
 classifiers = [
     "Programming Language :: Python :: 3",
     "License :: OSI Approved :: MIT License",
@@ -20,7 +20,7 @@ classifiers = [
 
 dependencies = [
   "faker==19.4.0",
-  "psycopg2-binary==2.9.8",
+  "psycopg2-binary==2.9.9",
   "pydantic==2.3.0",
   "sqlalchemy==2.0.0",
   "alembic==1.12.0",
