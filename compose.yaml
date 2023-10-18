@@ -46,8 +46,8 @@ services:
         condition: service_healthy
       cache:
         condition: service_healthy
-    volumes:
-      - server:/usr/local/lib/python3.11/site-packages/pa_fastapi
+    # volumes: 
+      # - server:/app
 
   db:
     env_file:
@@ -100,12 +100,13 @@ volumes:
       type: none
       o: bind
       device: /d/wsl/docker/pa/cache
-  server:
-    driver: local
-    driver_opts:
-      type: none
-      o: bind
-      device: /d/wsl/docker/pa/server
+  # server:
+  #   driver: local
+  #   driver_opts:
+  #     type: none
+  #     o: bind
+  #     device: /d/wsl/docker/pa/server
+
 secrets:
   db-password:
     file: secrets/postgres.key
