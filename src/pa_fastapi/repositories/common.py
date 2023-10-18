@@ -13,7 +13,10 @@ def key(key):
 
 repository = prefix + """
 async def create(datas: Type, session: Session, cache: Cache|None = None) -> Type:
-    record = DBType(**dict(datas))
+    model = datas.model_dump(exclude_defaults=True, exclude_none=True, exclude_unset=True)
+    pk = [c.name for c in DBType.metadata.tables[DBType.__tablename__].primary_key.columns]
+    model = {k: v for k, v in model.items() if k not in pk}
+    record = DBType(**model)
     session.add(record)
     session.commit()
     session.refresh(record)
