@@ -50,7 +50,7 @@ class Auth:
     def get_password_hash(self, password: str):
         return self.pwd_context.hash(password)
 
-    def create_token(self, data: dict, expires_delta: timedelta|None = None):
+    def create_token(self, data: dict, expires_delta: int|None = None):
         to_encode = data.copy()
         if expires_delta is None:
             match data["name"]:

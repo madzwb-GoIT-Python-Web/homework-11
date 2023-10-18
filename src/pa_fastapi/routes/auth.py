@@ -102,12 +102,12 @@ async def   login(
     if not auth_service.verify_scopes(body.scopes, roles):
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail=f"Invalid scope={str(body.scopes)}.")
     
-    access_token_expires    = timedelta(minutes=ACCESS_TOKEN_EXPIRE)
-    refresh_token_expires   = timedelta(minutes=REFRESH_TOKEN_EXPIRE)
+    # access_token_expires    = timedelta(minutes=ACCESS_TOKEN_EXPIRE)
+    # refresh_token_expires   = timedelta(minutes=REFRESH_TOKEN_EXPIRE)
     access_token_data = {"name": "access"   , "sub": email, "scope": " ".join(roles)}
     refres_token_data = {"name": "refresh"  , "sub": email, "scope": " ".join(roles)}
-    access_token    = await auth_service.create_token(data = access_token_data  , expires_delta = access_token_expires)
-    refresh_token   = await auth_service.create_token(data = refres_token_data  , expires_delta = refresh_token_expires)
+    access_token    = auth_service.create_token(data = access_token_data  , expires_delta=ACCESS_TOKEN_EXPIRE)
+    refresh_token   = auth_service.create_token(data = refres_token_data  , expires_delta=REFRESH_TOKEN_EXPIRE)
     await repository.update_refresh_token(user.id, refresh_token, session, cache)
     return {"access_token": access_token, "refresh_token": refresh_token, "token_type": "bearer"}
 
@@ -132,12 +132,12 @@ async def   refresh_token(
     if not roles:
         roles.append(user.login)
     
-    access_token_expires    = timedelta(minutes=ACCESS_TOKEN_EXPIRE)
-    refresh_token_expires   = timedelta(minutes=REFRESH_TOKEN_EXPIRE)
+    # access_token_expires    = timedelta(minutes=ACCESS_TOKEN_EXPIRE)
+    # refresh_token_expires   = timedelta(minutes=REFRESH_TOKEN_EXPIRE)
     access_token_data = {"name": "access"   , "sub": email, "scope": " ".join(roles)}
     refres_token_data = {"name": "refresh"  , "sub": email, "scope": " ".join(roles)}
-    access_token    = await auth_service.create_token(data = access_token_data  , expires_delta = access_token_expires)
-    refresh_token   = await auth_service.create_token(data = refres_token_data  , expires_delta = refresh_token_expires)
+    access_token    = auth_service.create_token(data = access_token_data  , expires_delta = ACCESS_TOKEN_EXPIRE)
+    refresh_token   = auth_service.create_token(data = refres_token_data  , expires_delta = REFRESH_TOKEN_EXPIRE)
     await repository.update_refresh_token(user.id, refresh_token, session, cache)
     return {"access_token": access_token, "refresh_token": refresh_token, "token_type": "bearer"}
 
