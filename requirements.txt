@@ -75,8 +75,10 @@ markupsafe==2.1.3
 parse==1.19.1
     # via alembic-utils
 passlib[bcrypt]==1.7.4
-    # via pa-fastapi (pyproject.toml)
-psycopg2-binary==2.9.8
+    # via
+    #   pa-fastapi (pyproject.toml)
+    #   passlib
+psycopg2-binary==2.9.9
     # via pa-fastapi (pyproject.toml)
 pyasn1==0.5.0
     # via
@@ -103,7 +105,9 @@ python-dotenv==1.0.0
     #   pydantic-settings
     #   uvicorn
 python-jose[cryptography]==3.3.0
-    # via pa-fastapi (pyproject.toml)
+    # via
+    #   pa-fastapi (pyproject.toml)
+    #   python-jose
 python-multipart==0.0.6
     # via pa-fastapi (pyproject.toml)
 pyyaml==6.0.1
@@ -142,7 +146,9 @@ typing-extensions==4.8.0
     #   pydantic-core
     #   sqlalchemy
 uvicorn[standard]==0.23.2
-    # via pa-fastapi (pyproject.toml)
+    # via
+    #   pa-fastapi (pyproject.toml)
+    #   uvicorn
 watchfiles==0.20.0
     # via uvicorn
 websockets==11.0.3
