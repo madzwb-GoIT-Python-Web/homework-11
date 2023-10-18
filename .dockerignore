@@ -10,7 +10,7 @@
 **/.classpath
 **/.dockerignore
 **/.env
-**/.git
+#**/.git
 **/.gitignore
 **/.project
 **/.settings
@@ -30,10 +30,10 @@
 **/obj
 **/secrets.dev.yaml
 **/values.dev.yaml
-secrets
-.lock
-env
-.git
+**/secrets
+**/.lock
+**/env
+#.git
 
 # LICENSE
 # README.md
